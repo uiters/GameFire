@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameFire", "GameFire\GameFire.csproj", "{8114594F-B6DF-4076-9230-08E878969DDF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8114594F-B6DF-4076-9230-08E878969DDF}.Debug|x86.ActiveCfg = Debug|x86
+		{8114594F-B6DF-4076-9230-08E878969DDF}.Debug|x86.Build.0 = Debug|x86
+		{8114594F-B6DF-4076-9230-08E878969DDF}.Release|x86.ActiveCfg = Release|x86
+		{8114594F-B6DF-4076-9230-08E878969DDF}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E8ACDB8C-DDF6-485B-92BE-A2674F893B79}
+	EndGlobalSection
+EndGlobal
