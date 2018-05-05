@@ -1,7 +1,11 @@
 ﻿using GameFire.bullet;
+using GameFire.Control;
+using GameFire.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+
 namespace GameFire
 {
     /// <summary>
@@ -9,14 +13,14 @@ namespace GameFire
     /// </summary>
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        Texture2D bacground;
-        Rectangle boxBackGround;
-        Vector2 _index;
-        GameUI _gameUI;
-        Ship _ship;
-
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        private Texture2D bacground;
+        private Rectangle boxBackGround;
+        private Vector2 index;
+        private GameUI gameUI;
+        private GamePlay gamePlay;
+        private float timeColect;
         public Game1()
         {
             LoadUI();
@@ -25,8 +29,8 @@ namespace GameFire
 
         protected override void Initialize()
         {
-            _index.X = graphics.PreferredBackBufferWidth / 100;
-            _index.Y = graphics.PreferredBackBufferHeight / 100;
+            index.X = graphics.PreferredBackBufferWidth / 100;
+            index.Y = graphics.PreferredBackBufferHeight / 100;
             base.Initialize();
         }
 
@@ -34,8 +38,9 @@ namespace GameFire
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             bacground = this.Content.Load<Texture2D>("background/background");
-            _gameUI = new GameUI(Content, _index);
-            _ship = new Ship(Content, Vector2.Zero, _index);
+            gameUI = new GameUI(Content, index);
+            gamePlay = new GamePlay(Content, index);
+            //ship = new Ship(Content, Vector2.Zero, index);
         }
 
         protected override void UnloadContent()
@@ -45,16 +50,22 @@ namespace GameFire
 
         protected override void Update(GameTime gameTime)
         {
+            timeColect += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if(timeColect >= 30000.0f)
+            {
+                timeColect = 0.0f;
+                GC.Collect();
+            }
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            if (_gameUI.Visible == true)
+            if (gameUI.Visible == true)
             {
-                _gameUI.Update(gameTime);
-                this.IsMouseVisible = _gameUI.Visible;
+                gameUI.Update(gameTime);
+                this.IsMouseVisible = gameUI.Visible;
             }
             else
             {
-                _ship.Update(gameTime);
+                gamePlay.Update(gameTime);
             }
 
             base.Update(gameTime);
@@ -67,10 +78,12 @@ namespace GameFire
             spriteBatch.Draw(bacground, boxBackGround, Color.White);
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
-            if (_gameUI.Visible == true)
-                _gameUI.Draw(spriteBatch, Color.White);
+            if (gameUI.Visible == true)
+                gameUI.Draw(spriteBatch, Color.White);
             else
-                _ship.Draw(gameTime, spriteBatch);
+            {
+                gamePlay.Draw(gameTime, spriteBatch);
+            }
             spriteBatch.End();
             base.Draw(gameTime);
         }

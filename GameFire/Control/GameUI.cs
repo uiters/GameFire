@@ -100,11 +100,6 @@ namespace GameFire
         }
         private void Initialize()
         {
-            //float scaleX = _graphics.PreferredBackBufferWidth;
-            //float scaleY = _graphics.PreferredBackBufferHeight;
-            //scaleX = (float)Math.Sqrt(scaleX);
-            //scaleY = (float)Math.Sqrt(scaleY);
-            //float scale = scaleX / scaleY;
             float scale = 1;
             //=======================================
             //Button Play
@@ -238,6 +233,5 @@ namespace GameFire
 
         }
         #endregion
-
     }
 }

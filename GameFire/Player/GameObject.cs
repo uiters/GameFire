@@ -20,17 +20,22 @@ namespace GameFire.bullet
         protected bool _visible;
         protected bool _isMove;
         protected float _heart;
+        virtual public Rectangle Bounds
+        {
+            get => _desRectSkin;
+        }
+
+        public bool Visible { get => _visible; set => _visible = value; }
         #endregion
 
         #region Constructor
         public GameObject(ContentManager content, Vector2 speed, Vector2 index, Rectangle position)
         {
-            this._visible = true;
+            this.Visible = true;
             this._content = content;
             this._speed = speed;
             _desRectSkin = position;
             _index = index;
-            Load();
         }
         #endregion
 
@@ -55,11 +60,12 @@ namespace GameFire.bullet
         {
 
         }
-        virtual public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        virtual public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Color color)
         {
-            if(_visible == true)
-                spriteBatch.Draw(_skin, _desRectSkin, Color.White);
+            if (Visible == true)
+                spriteBatch.Draw(_skin, _desRectSkin, color);
         }
+        
         #endregion
     }
 }

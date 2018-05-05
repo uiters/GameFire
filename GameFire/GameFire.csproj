@@ -41,9 +41,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="bullet\Bullet.cs" />
-    <Compile Include="bullet\GameObject.cs" />
-    <Compile Include="bullet\Ship.cs" />
+    <Compile Include="Enemy\Chicken.cs" />
+    <Compile Include="Player\Bullet.cs" />
+    <Compile Include="Player\GameObject.cs" />
+    <Compile Include="Player\Ship.cs" />
     <Compile Include="button\Button.cs" />
     <Compile Include="Control\GamePlay.cs" />
     <Compile Include="Game1.cs" />
