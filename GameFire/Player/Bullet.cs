@@ -69,18 +69,22 @@ namespace GameFire.bullet
         {
             if (!Visible)
                 return;
-            if(_speed.Y <= maxSpeed)
+            AnimationFly(gameTime);
+        }
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Color color)
+        {
+            base.Draw(gameTime, spriteBatch, color);
+        }
+        private void AnimationFly(GameTime gameTime)
+        {
+            if (_speed.Y <= maxSpeed)
                 _speed.Y += _speed.Y * 0.05f;
-            if(_desRectSkin.Y >= -10)
+            if (_desRectSkin.Y >= -10)
                 _desRectSkin.Location = (_desRectSkin.Location.ToVector2() - _speed).ToPoint();
             else
             {
                 this.Visible = false;
             }
-        }
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Color color)
-        {
-            base.Draw(gameTime, spriteBatch, color);
         }
         #endregion
 

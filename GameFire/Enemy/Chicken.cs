@@ -2,19 +2,19 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameFire.Enemy
 {
+    public enum TypeChiken
+    {
+        ChickenGreen = 1,
+        ChickenRed = 2,
+
+    }
     public class Chicken : GameObject
     {
         #region Properties
-        private static readonly Random random = new Random();
-        private int level;
+        private TypeChiken type;
         private float totalTime;
         private sbyte indexNow;
         private bool isAttacked;
@@ -25,11 +25,11 @@ namespace GameFire.Enemy
         private Rectangle[] desRectDies;
         private Rectangle sourceRectSkin;
 
-        public int scores
+        public int Scores
         {
             get
             {
-                int extraScores = (timeLive < 6) ? minScores : random.Next(minScores / (timeLive / 3), minScores);
+                int extraScores = (timeLive < 6) ? minScores : _random.Next(minScores / (timeLive / 3), minScores);
                 return extraScores + minScores;
             }
         }
@@ -43,14 +43,14 @@ namespace GameFire.Enemy
 
 
         #region Constructor
-        public Chicken(ContentManager content, Vector2 speed, Vector2 index, Rectangle position, int level, float heart) : base(content, speed, index, position)
+        public Chicken(ContentManager content, Vector2 speed, Vector2 index, Rectangle position, TypeChiken type, float heart) : base(content, speed, index, position)
         {
-            this.level = level;
+            this.type = type;
             this._heart = heart;
             indexNow = 0;
             sourceRectSkin = new Rectangle(position.Width * indexNow, 0, position.Width, position.Height);
             totalTime = 0.0f;
-            minScores = (int)(level * _heart * 100) + 100;
+            minScores = (int)((int)type * _heart * 100) + 100;
             this.Load();
         }
         public override Rectangle Bounds
@@ -66,10 +66,10 @@ namespace GameFire.Enemy
         #region Load & unLoad
         protected override void Load()
         {
-            switch (level)
+            switch ((int)type)
             {
                 case 1:
-                    _skin = _content.Load<Texture2D>("Enemy/chicken");
+                    _skin = _content.Load<Texture2D>("Enemy/chickenGreen");
                     break;
                 default:
                     break;
@@ -97,20 +97,14 @@ namespace GameFire.Enemy
             if (!Visible)
                 return;
             timeLive += gameTime.ElapsedGameTime.Seconds;
-            totalTime += (float) gameTime.ElapsedGameTime.TotalMilliseconds;
             if(_heart > 0)
             {
+                AnimationFly(gameTime);
                 if (isAttacked)
                 {
-                    _desRectSkin.Location = new Point(_desRectSkin.X, _desRectSkin.Y + 2);
+                    _desRectSkin.Location = new Point(_desRectSkin.X, _desRectSkin.Y + 4);
                     isAttacked = false;
                 }
-                if (totalTime >= 70.0f)
-                {
-                    indexNow = (++indexNow >= 19) ? (sbyte)0 : indexNow;
-                    sourceRectSkin.X = _desRectSkin.Width * ((indexNow > 9) ? 19 - indexNow : indexNow);
-                    totalTime = 0.0f;
-                }             
             }
             else
             {
@@ -146,6 +140,9 @@ namespace GameFire.Enemy
                 }
             }
         }
+        #endregion
+
+        #region Method Chicken
         /// <summary>
         /// Return scores if chicken dies .
         /// if chicken don't dies return 0
@@ -159,16 +156,39 @@ namespace GameFire.Enemy
             {
                 for (int i = 0; i < desRectDies.Length; i++)
                 {
-                    Point randomLocation = new Point(random.Next(-15, 15), random.Next(-15, 15));
+                    Point randomLocation = new Point(_random.Next(-15, 15), _random.Next(-15, 15));
                     desRectDies[i].Location = _desRectSkin.Location + randomLocation; 
                 }
-                return scores;
+                return Scores;
             }
             else
             {
                 isAttacked = true;
-                _desRectSkin.Location = new Point(_desRectSkin.X, _desRectSkin.Y - 2);
+                _desRectSkin.Location = new Point(_desRectSkin.X, _desRectSkin.Y - 4);
                 return 0;
+            }
+        }
+
+        private void AnimationFly(GameTime gameTime)
+        {
+            totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (totalTime >= 70.0f)
+            {
+                indexNow = (++indexNow >= 19) ? (sbyte)0 : indexNow;
+                sourceRectSkin.X = _desRectSkin.Width * ((indexNow > 9) ? 19 - indexNow : indexNow);
+                totalTime = 0.0f;
+            }
+        }
+
+        public Egg CreateEgg()
+        {
+            if(_random.Next(0, 400) == 25)
+            {
+                return new Egg(_content, new Vector2(0, 2), _index, new Rectangle(_desRectSkin.Center + new Point(-10 , 0), new Point(20,20)), this.type);
+            }
+            else
+            {
+                return null;
             }
         }
         #endregion

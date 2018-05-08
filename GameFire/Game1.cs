@@ -98,12 +98,21 @@ namespace GameFire
             int height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             //graphics.PreferredBackBufferWidth = 1920;
             //graphics.PreferredBackBufferHeight = 1080;
-            graphics.PreferredBackBufferWidth = (int)(width * 0.325);
-            graphics.PreferredBackBufferHeight = (int)(height * 0.9);
+            if(width > 1024)
+            {
+                graphics.PreferredBackBufferWidth = (int)(width * 0.325);
+                graphics.PreferredBackBufferHeight = (int)(height * 0.9);
+            }
+            else
+            {
+                graphics.PreferredBackBufferWidth = (int)(width * 0.5);
+                graphics.PreferredBackBufferHeight = (int)(height * 0.875);
+            }
+
             Window.Position = new Point((width / 2) - (graphics.PreferredBackBufferWidth / 2), (height / 2) - (graphics.PreferredBackBufferHeight / 2));
-            boxBackGround = new Rectangle(0, 0, width, height);
             //boxBackGround = new Rectangle(0, 0, 800, 900);
             //graphics.IsFullScreen = true;
+            boxBackGround = new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             this.TargetElapsedTime = new System.TimeSpan(0, 0, 0, 0, 33);
             this.IsMouseVisible = true;
         }

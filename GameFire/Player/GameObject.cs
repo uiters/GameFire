@@ -2,16 +2,13 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameFire.bullet
 {
     public class GameObject
     {
         #region Properties
+        protected static readonly Random _random = new Random();
         protected ContentManager _content;
         protected Texture2D _skin;
         protected Rectangle _desRectSkin;
