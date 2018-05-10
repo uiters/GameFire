@@ -20,13 +20,13 @@ namespace GameFire.MapPlay
         #endregion
 
         #region Contructor
-        public GamePlay(ContentManager content, Vector2 index)
+        public GamePlay(ContentManager content, Vector2 index, Rectangle screen)
         {
             this.IsPlay = true;
             this.content = content;
             ship = new Ship(content, Vector2.Zero, index);
             chickens = new List<Chicken>();
-            map1 = new Map1(content, index, chickens);
+            map1 = new Map1(content, index, chickens, IsPlay, screen);
 
             eggs = new List<Egg>();
             scores = new Scores(content);
@@ -101,6 +101,7 @@ namespace GameFire.MapPlay
 
                     if (rect1.Intersects(chickens[i].Bounds) || rect2.Intersects(chickens[i].Bounds))
                     {
+                        scores.ScoresPlay += chickens[i].Attacked(ship);
                         return true;
                     }
                 }

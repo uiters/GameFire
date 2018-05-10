@@ -18,7 +18,7 @@ namespace GameFire.Enemy
         private float totalTime;
         private sbyte indexNow;
         private bool isAttacked;
-        private int timeLive;
+        private float timeLive;
         private int minScores;
 
         private Texture2D[] textureDies;
@@ -29,7 +29,7 @@ namespace GameFire.Enemy
         {
             get
             {
-                int extraScores = (timeLive < 4.0f) ? _random.Next(minScores * 2 / 3, minScores) : _random.Next(minScores / (timeLive / 2), minScores);
+                int extraScores = (timeLive < 4) ? _random.Next(minScores * 2 / 3, minScores * 3 / 2) : _random.Next(minScores / (int) (timeLive / 2), minScores);
                 return extraScores + minScores;
             }
         }
@@ -39,6 +39,8 @@ namespace GameFire.Enemy
             set => _desRectSkin.Location = value;
         }
         public bool IsAlive { get => _heart > 0; }
+        public Vector2 Speed { get => _speed; set => _speed = value; }
+        public object Tag { get; set; }
         #endregion
 
 
@@ -47,10 +49,10 @@ namespace GameFire.Enemy
         {
             this.type = type;
             this._heart = heart;
-            indexNow = 0;
+            indexNow =(sbyte) _random.Next(0, 19);
             sourceRectSkin = new Rectangle(location.Width * indexNow, 0, location.Width, location.Height);
             totalTime = 0.0f;
-            minScores = (int)((int)type * _heart * 100) + 100;
+            minScores = (int)((int)type * _heart * 50);
             this.Load();
         }
         public override Rectangle Bounds
@@ -96,7 +98,7 @@ namespace GameFire.Enemy
         {
             if (!Visible)
                 return;
-            timeLive += gameTime.ElapsedGameTime.Seconds;
+            timeLive +=(float) gameTime.ElapsedGameTime.TotalSeconds;
             if(_heart > 0)
             {
                 AnimationFly(gameTime);
@@ -152,12 +154,23 @@ namespace GameFire.Enemy
         public int Attacked(Bullet bullet)
         {
             this._heart -= bullet.Damage;
-            if(_heart <= 0.0f)
+            return GetScores();
+        }
+
+        public int Attacked(Ship ship)
+        {
+            this._heart -= 1.0f;
+            return GetScores();
+        }
+
+        private int GetScores()
+        {
+            if (_heart <= 0.0f)
             {
                 for (int i = 0; i < desRectDies.Length; i++)
                 {
                     Point randomLocation = new Point(_random.Next(-15, 15), _random.Next(-15, 15));
-                    desRectDies[i].Location = _desRectSkin.Location + randomLocation; 
+                    desRectDies[i].Location = _desRectSkin.Location + randomLocation;
                 }
                 return Scores;
             }
@@ -182,9 +195,9 @@ namespace GameFire.Enemy
 
         public Egg CreateEgg()
         {
-            if(_random.Next(0, 10000) == 200)
+            if(_random.Next(0, 750) == 100)
             {
-                return new Egg(_content, new Vector2(0, 2), _index, new Rectangle(_desRectSkin.Center + new Point(-10 , 0), new Point(20,20)), this.type);
+                return new Egg(_content, new Vector2(0, _random.Next(2, 10)), _index, new Rectangle(_desRectSkin.Center + new Point(-10 , 0), new Point(20,20)), this.type);
             }
             else
             {

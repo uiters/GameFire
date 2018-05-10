@@ -39,7 +39,7 @@ namespace GameFire
             spriteBatch = new SpriteBatch(GraphicsDevice);
             bacground = this.Content.Load<Texture2D>("background/background");
             gameUI = new GameUI(Content, index);
-            gamePlay = new GamePlay(Content, index);
+            gamePlay = new GamePlay(Content, index, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight));
             //ship = new Ship(Content, Vector2.Zero, index);
         }
 

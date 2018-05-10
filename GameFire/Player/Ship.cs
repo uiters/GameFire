@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 
+
 namespace GameFire.bullet
 {
     public class Ship : GameObject
@@ -21,9 +22,12 @@ namespace GameFire.bullet
         private bool isMaxBig = false;
         private Vector2 origin;
 
+        private float totalTime;
+
         private Texture2D textureDie;
         private Rectangle desRectDie;
         private bool isDeading;
+
 
         public bool IsProtect { get => isProtect; private set => isProtect = value; }
         public int Heart { get => (int)_heart; set => _heart = value; }
@@ -67,30 +71,12 @@ namespace GameFire.bullet
 
         public override void Update(GameTime gameTime)
         {
-            if(Visible == true)
+            if (Visible == true)
             {
+                this.UpdateBullet(gameTime);
                 if (isDeading == true)
                 {
-                    if(timeApear > 30.0f)
-                    {
-                        if (desRectDie.Width < 80 || desRectDie.Height < 80)
-                        {
-                            desRectDie.Size += new Point(8, 8);
-                            desRectDie.Location -= new Point(4, 4);
-                        }
-                        else
-                        {
-                            this.isDeading = false;
-                            this.Visible = false;
-                            this.IsProtect = true;
-                        }
-                        timeApear = 0.0f;
-                    }
-                    else
-                    {
-                        timeApear += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                    }
-
+                    Deading(gameTime);
                 }
                 else
                 if(_isMove == false)
@@ -102,16 +88,22 @@ namespace GameFire.bullet
                 {
                     if (IsProtect == true)
                         Protect(gameTime);
+                    totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
                     MouseState mouse = Mouse.GetState();
                     KeyboardState keyboard = Keyboard.GetState();
-
-                    if (_desRectSkin.X != mouse.X || _desRectSkin.Y != mouse.Y)
-                        _desRectSkin = new Rectangle(mouse.X - 31, mouse.Y - 31, 72, 71);
-
+                    if(totalTime > 30.0f)
+                    {
+                        if (_desRectSkin.X != mouse.X || _desRectSkin.Y != mouse.Y)
+                        {
+                            _desRectSkin.Location = new Point(mouse.X - 31, mouse.Y - 31);
+                            CalculateLocation();
+                        }
+                        totalTime = 0.0f;
+                    }
+                    if(!CheckMouseIsOut(mouse))
                     timeDelay += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                     this.BulletClick(mouse, keyboard);
-                    this.UpdateBullet(gameTime);
                 }
             }
             else
@@ -130,7 +122,8 @@ namespace GameFire.bullet
         {
             if (!Visible)
                 return;
-            if(isDeading == true)
+            this.DrawBullet(gameTime, spriteBatch);
+            if (isDeading == true)
             {
                 spriteBatch.Draw(textureDie, desRectDie, color);
             }
@@ -147,7 +140,6 @@ namespace GameFire.bullet
                     spriteBatch.Draw(textureProtect, desProtect, null, Color.White, rotationProtect, origin, SpriteEffects.None, 1);
 
                 }
-                this.DrawBullet(gameTime, spriteBatch);
                 base.Draw(gameTime, spriteBatch, Color.White);
             }          
         }
@@ -185,7 +177,7 @@ namespace GameFire.bullet
         private void Protect(GameTime gameTime)
         {
             timeApear += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (timeApear >= 3000.0f)
+            if (timeApear >= 2000.0f)
             {
                 IsProtect = false;
                 timeApear = 0.0f;
@@ -221,7 +213,7 @@ namespace GameFire.bullet
             {
                 if (mouse.LeftButton == ButtonState.Pressed || keyboard.IsKeyDown(Keys.Space))
                 {
-                    Bullet bullet = new Bullet(_content, new Vector2(0, 10.0f), _index, new Rectangle(mouse.Position - new Point(0, 31), new Point(10,25)), level);
+                    Bullet bullet = new Bullet(_content, new Vector2(0, 10.0f), _index, new Rectangle(_desRectSkin.Center + new Point(-5, -31), new Point(10, 25)), level);
                     _desRectSkin = new Rectangle(_desRectSkin.X, _desRectSkin.Y + 5, _desRectSkin.Width, _desRectSkin.Height);
                     Bullets.Add(bullet);
                     timeDelay = 0.0f;
@@ -248,6 +240,51 @@ namespace GameFire.bullet
         }
         #endregion
 
+        #region Calculate
+        private void CalculateLocation()
+        {
+            if (_desRectSkin.Top < 31)
+                _desRectSkin.Y = 31;
+            else
+            if (_desRectSkin.Bottom >= _index.Y * 100 + 31)
+                _desRectSkin.Y = (int)_index.Y * 100 - 31;
+            if (_desRectSkin.Left < 0)
+                _desRectSkin.X = 0;
+            else
+                if (_desRectSkin.Right > (int)(_index.X * 100 + 31))
+                _desRectSkin.X = (int)(_index.X * 100 - 31);
+        }
+        
+        private bool CheckMouseIsOut(MouseState mouse)
+        {
+            return (mouse.X < 0) || (mouse.Y < 0) || (mouse.X > _index.X * 100);// || (mouse.Y > _index.Y * 100);
+        }
+        #endregion
+
+        #region Private Method
+        private void Deading(GameTime gameTime)
+        {
+            if (timeApear > 30.0f)
+            {
+                if (desRectDie.Width < 80 || desRectDie.Height < 80)
+                {
+                    desRectDie.Size += new Point(8, 8);
+                    desRectDie.Location -= new Point(4, 4);
+                }
+                else
+                {
+                    this.isDeading = false;
+                    this.Visible = false;
+                    this.IsProtect = true;
+                }
+                timeApear = 0.0f;
+            }
+            else
+            {
+                timeApear += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            }
+        }
+        #endregion
 
         #region Destructor
         ~Ship()

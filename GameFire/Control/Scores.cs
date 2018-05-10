@@ -103,7 +103,7 @@ namespace GameFire.MapPlay
                 {
                     if (indexPre[i] == indexNow[i])
                         continue;
-                    indexPre[i] = (indexPre[i] == indexNow[i]) ? indexPre[i] : (++indexPre[i] > 10) ? (sbyte)0 : indexPre[i];
+                    indexPre[i] = (indexPre[i] == indexNow[i]) ? indexPre[i] : (++indexPre[i] >= 10) ? (sbyte)0 : indexPre[i];
                     sourceRectNumer[i] = new Rectangle(sourceRectNumer[i].Width  * indexPre[i], 0, sourceRectNumer[i].Width, sourceRectNumer[i].Height);
                 }
             }
