@@ -1,5 +1,5 @@
 ﻿using GameFire.bullet;
-using GameFire.Control;
+using GameFire.MapPlay;
 using GameFire.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

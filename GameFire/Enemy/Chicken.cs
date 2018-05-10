@@ -29,11 +29,11 @@ namespace GameFire.Enemy
         {
             get
             {
-                int extraScores = (timeLive < 6) ? minScores : _random.Next(minScores / (timeLive / 3), minScores);
+                int extraScores = (timeLive < 4.0f) ? _random.Next(minScores * 2 / 3, minScores) : _random.Next(minScores / (timeLive / 2), minScores);
                 return extraScores + minScores;
             }
         }
-        public Point Position
+        public Point Location
         {
             get => _desRectSkin.Location;
             set => _desRectSkin.Location = value;
@@ -43,12 +43,12 @@ namespace GameFire.Enemy
 
 
         #region Constructor
-        public Chicken(ContentManager content, Vector2 speed, Vector2 index, Rectangle position, TypeChiken type, float heart) : base(content, speed, index, position)
+        public Chicken(ContentManager content, Vector2 speed, Vector2 index, Rectangle location, TypeChiken type, float heart) : base(content, speed, index, location)
         {
             this.type = type;
             this._heart = heart;
             indexNow = 0;
-            sourceRectSkin = new Rectangle(position.Width * indexNow, 0, position.Width, position.Height);
+            sourceRectSkin = new Rectangle(location.Width * indexNow, 0, location.Width, location.Height);
             totalTime = 0.0f;
             minScores = (int)((int)type * _heart * 100) + 100;
             this.Load();
@@ -182,7 +182,7 @@ namespace GameFire.Enemy
 
         public Egg CreateEgg()
         {
-            if(_random.Next(0, 400) == 25)
+            if(_random.Next(0, 10000) == 200)
             {
                 return new Egg(_content, new Vector2(0, 2), _index, new Rectangle(_desRectSkin.Center + new Point(-10 , 0), new Point(20,20)), this.type);
             }

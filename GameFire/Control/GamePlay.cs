@@ -3,13 +3,9 @@ using GameFire.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GameFire.Control
+namespace GameFire.MapPlay
 {
     public class GamePlay
     {
@@ -19,7 +15,8 @@ namespace GameFire.Control
         private List<Chicken> chickens;
         private ContentManager content;
         private List<Egg> eggs;
-        private long scores;
+        private Scores scores;
+        private Map1 map1;
         #endregion
 
         #region Contructor
@@ -29,9 +26,10 @@ namespace GameFire.Control
             this.content = content;
             ship = new Ship(content, Vector2.Zero, index);
             chickens = new List<Chicken>();
-            Chicken chicken = new Chicken(content, Vector2.Zero, index, new Rectangle(100, 100, 47, 38), TypeChiken.ChickenGreen, 10);
-            chickens.Add(chicken);
+            map1 = new Map1(content, index, chickens);
+
             eggs = new List<Egg>();
+            scores = new Scores(content);
         }
         #endregion
 
@@ -40,9 +38,11 @@ namespace GameFire.Control
         {
             if(IsPlay)
             {
+                UpdateMap(gameTime);
                 UpdateShip(gameTime);
                 UpdateChickens(gameTime);
                 UpdateEggs(gameTime);
+                UpdateScores(gameTime);
             }
         }
 
@@ -51,6 +51,7 @@ namespace GameFire.Control
             DrawShip(gameTime, spriteBatch);
             DrawChickens(gameTime, spriteBatch);
             DrawEggs(gameTime, spriteBatch);
+            DrawScores(gameTime, spriteBatch);
         }
 
 
@@ -73,7 +74,7 @@ namespace GameFire.Control
             {
                 if (ship.Bullets[i].Bounds.Intersects(chicken.Bounds))
                 {
-                    scores += chicken.Attacked(ship.Bullets[i]);
+                    scores.ScoresPlay += chicken.Attacked(ship.Bullets[i]);
                     ship.Bullets[i].Visible = false;
                     ship.Bullets.RemoveAt(i--);
                     return true;
@@ -199,6 +200,24 @@ namespace GameFire.Control
             {
                 eggs[i].Draw(gameTime, spriteBatch, Color.White);
             }
+        }
+        #endregion
+
+        #region Scores
+        private void UpdateScores(GameTime gameTime)
+        {
+            scores.Update(gameTime);
+        }
+        private void DrawScores(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            scores.Draw(gameTime, spriteBatch);
+        }
+        #endregion
+
+        #region Map
+        private void UpdateMap(GameTime gameTime)
+        {
+            map1.Update(gameTime);
         }
         #endregion
     }

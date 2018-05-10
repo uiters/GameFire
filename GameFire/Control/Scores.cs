@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GameFire.Control
+namespace GameFire.MapPlay
 {
     public class Scores
     {
@@ -37,12 +37,19 @@ namespace GameFire.Control
                         indexNow.Add((sbyte)(scores % 10));
                         indexPre.Add(0);
                         Rectangle rectangle = new Rectangle(new Point(0, 0), _skin.Bounds.Size);
+                        rectangle.Width = rectangle.Width / 10;
+                        rectangle.X = length * rectangle.Width;
+
                         desRectNumber.Add(rectangle);
+
+                        rectangle.X = 0;
+
                         sourceRectNumer.Add(rectangle);
+                        length++;
                     }
                     scores /= 10;
                 }
-                indexNow.Reverse();
+               indexNow.Reverse();
             }
         }
         public bool Visiable { get; set; }
@@ -57,6 +64,18 @@ namespace GameFire.Control
             this.indexNow = new List<sbyte>();
             this.desRectNumber = new List<Rectangle>();
             this.sourceRectNumer = new List<Rectangle>();
+            Visiable = true;
+            Load();
+
+
+            Rectangle rectangle = new Rectangle(new Point(0, 0), _skin.Bounds.Size);
+            rectangle.Width = rectangle.Width / 10;
+            desRectNumber.Add(rectangle);
+            sourceRectNumer.Add(rectangle);
+            indexNow.Add(0);
+            indexPre.Add(0);
+            length++;
+
         }
 
         #endregion
@@ -82,8 +101,10 @@ namespace GameFire.Control
                 timeNow = 0.0f;
                 for (int i = 0; i < length; i++)
                 {
+                    if (indexPre[i] == indexNow[i])
+                        continue;
                     indexPre[i] = (indexPre[i] == indexNow[i]) ? indexPre[i] : (++indexPre[i] > 10) ? (sbyte)0 : indexPre[i];
-                    sourceRectNumer[i] = new Rectangle(_skin.Width * indexPre[i], 0, _skin.Width, _skin.Height);
+                    sourceRectNumer[i] = new Rectangle(sourceRectNumer[i].Width  * indexPre[i], 0, sourceRectNumer[i].Width, sourceRectNumer[i].Height);
                 }
             }
         }
@@ -95,6 +116,7 @@ namespace GameFire.Control
                 spriteBatch.Draw(_skin, desRectNumber[i], sourceRectNumer[i], Color.White);
             }
         }
+
         private bool Equals(List<int> a, List<int> b)
         {
             if (a.Count != b.Count)

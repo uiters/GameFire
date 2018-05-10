@@ -22,7 +22,7 @@ namespace GameFire.Enemy
         #endregion
 
         #region Constructor
-        public Egg(ContentManager content, Vector2 speed, Vector2 index, Rectangle position, TypeChiken type) : base(content, speed, index, position)
+        public Egg(ContentManager content, Vector2 speed, Vector2 index, Rectangle location, TypeChiken type) : base(content, speed, index, location)
         {
             this.type = type;
             IsBreak = false;

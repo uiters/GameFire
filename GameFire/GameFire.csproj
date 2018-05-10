@@ -41,9 +41,11 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MapPlay\Map.cs" />
     <Compile Include="Control\Scores.cs" />
     <Compile Include="Enemy\Chicken.cs" />
     <Compile Include="Enemy\Egg.cs" />
+    <Compile Include="MapPlay\Map1.cs" />
     <Compile Include="Player\Bullet.cs" />
     <Compile Include="Player\GameObject.cs" />
     <Compile Include="Player\Ship.cs" />

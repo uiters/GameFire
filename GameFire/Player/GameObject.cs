@@ -26,12 +26,12 @@ namespace GameFire.bullet
         #endregion
 
         #region Constructor
-        public GameObject(ContentManager content, Vector2 speed, Vector2 index, Rectangle position)
+        public GameObject(ContentManager content, Vector2 speed, Vector2 index, Rectangle location)
         {
             this.Visible = true;
             this._content = content;
             this._speed = speed;
-            _desRectSkin = position;
+            _desRectSkin = location;
             _index = index;
         }
         #endregion
