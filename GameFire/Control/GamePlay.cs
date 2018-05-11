@@ -3,6 +3,7 @@ using GameFire.Enemy;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 
 namespace GameFire.MapPlay
@@ -17,6 +18,7 @@ namespace GameFire.MapPlay
         private List<Egg> eggs;
         private Scores scores;
         private Map1 map1;
+        private Song song;
         #endregion
 
         #region Contructor
@@ -30,6 +32,16 @@ namespace GameFire.MapPlay
 
             eggs = new List<Egg>();
             scores = new Scores(content);
+            Load();
+        }
+        #endregion
+
+        #region Load & unload
+        private void Load()
+        {
+            song = content.Load<Song>("Music/backgroundMap");
+            MediaPlayer.Volume = 0.5f;
+            MediaPlayer.Play(song);
         }
         #endregion
 
@@ -94,7 +106,7 @@ namespace GameFire.MapPlay
                     continue;
                 }
                 else
-                if (chickens[i].IsAlive && !ship.IsProtect) // collision with chicken
+                if (!ship.IsDeading && chickens[i].IsAlive && !ship.IsProtect) // collision with chicken
                 {
                     Rectangle rect1 = new Rectangle(ship.Bounds.Location + new Point(32, 5), new Point(13, 33));
                     Rectangle rect2 = new Rectangle(ship.Bounds.Location + new Point(10, 37), new Point(62, 35));
@@ -142,6 +154,7 @@ namespace GameFire.MapPlay
             if(ShipCollision() == true)
             {
                 ship.Dead();
+                ship.SoundDeadPlay();
             }
         }
         private void DrawShip(GameTime gameTime, SpriteBatch spriteBatch)

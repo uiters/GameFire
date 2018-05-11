@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -10,7 +11,7 @@ namespace GameFire.bullet
         private float damage;
         private int level;
         private readonly float maxSpeed = 100.0f;
-
+        private SoundEffect songFire;
         public float Damage { get => damage; private set => damage = value; }
         #endregion
 
@@ -18,7 +19,8 @@ namespace GameFire.bullet
         public Bullet(ContentManager content, Vector2 speed, Vector2 index, Rectangle position, int level) : base(content, speed, index, position)
         {
             this.level = level;
-            this.damage = 1.0f;
+            
+            this.damage = level;
             Load();
         }
         #endregion
@@ -57,6 +59,8 @@ namespace GameFire.bullet
                 default:
                     return;
             }
+            songFire = _content.Load<SoundEffect>("Music/bullet/a");
+            songFire.Play(0.75f, 0, 0);
         }
         protected override void Unload()
         {

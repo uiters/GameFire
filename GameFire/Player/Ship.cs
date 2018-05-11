@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -28,9 +29,11 @@ namespace GameFire.bullet
         private Rectangle desRectDie;
         private bool isDeading;
 
+        private SoundEffect soundDie;
 
         public bool IsProtect { get => isProtect; private set => isProtect = value; }
         public int Heart { get => (int)_heart; set => _heart = value; }
+        public bool IsDeading { get => isDeading; }
         #endregion
 
         #region Bullet
@@ -64,6 +67,7 @@ namespace GameFire.bullet
             origin = new Vector2(textureProtect.Width / 2, textureProtect.Height / 2);
             Bullets = new List<Bullet>();
             textureDie = _content.Load<Texture2D>("shipDie");
+            soundDie = _content.Load<SoundEffect>("Music/dead");
         }
         #endregion
 
@@ -157,7 +161,6 @@ namespace GameFire.bullet
         }
         #endregion
 
-
         #region Game Start
         private void Apperend(GameTime gameTime)
         {
@@ -205,7 +208,6 @@ namespace GameFire.bullet
         }
         #endregion
 
-
         #region Bullet
         private void BulletClick(MouseState mouse, KeyboardState keyboard)
         {
@@ -213,7 +215,8 @@ namespace GameFire.bullet
             {
                 if (mouse.LeftButton == ButtonState.Pressed || keyboard.IsKeyDown(Keys.Space))
                 {
-                    Bullet bullet = new Bullet(_content, new Vector2(0, 10.0f), _index, new Rectangle(_desRectSkin.Center + new Point(-5, -31), new Point(10, 25)), level);
+
+                    Bullet bullet = new Bullet(_content, new Vector2(0, 10.0f), _index, new Rectangle(_desRectSkin.Center + new Point(-5, -31), new Point(10, 35)), 1);
                     _desRectSkin = new Rectangle(_desRectSkin.X, _desRectSkin.Y + 5, _desRectSkin.Width, _desRectSkin.Height);
                     Bullets.Add(bullet);
                     timeDelay = 0.0f;
@@ -283,6 +286,10 @@ namespace GameFire.bullet
             {
                 timeApear += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             }
+        }
+        public void SoundDeadPlay()
+        {
+            soundDie.Play(0.75f, 0, 0);
         }
         #endregion
 

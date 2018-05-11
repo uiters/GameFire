@@ -29,7 +29,7 @@ namespace GameFire.Enemy
         {
             get
             {
-                int extraScores = (timeLive < 4) ? _random.Next(minScores * 2 / 3, minScores * 3 / 2) : _random.Next(minScores / (int) (timeLive / 2), minScores);
+                int extraScores = (timeLive < 4) ? _random.Next(minScores * 2 / 3, minScores * 2) : _random.Next(minScores / (int) (timeLive / 2), minScores);
                 return extraScores + minScores;
             }
         }
@@ -43,16 +43,14 @@ namespace GameFire.Enemy
         public object Tag { get; set; }
         #endregion
 
-
         #region Constructor
         public Chicken(ContentManager content, Vector2 speed, Vector2 index, Rectangle location, TypeChiken type, float heart) : base(content, speed, index, location)
         {
             this.type = type;
             this._heart = heart;
             indexNow =(sbyte) _random.Next(0, 19);
-            sourceRectSkin = new Rectangle(location.Width * indexNow, 0, location.Width, location.Height);
             totalTime = 0.0f;
-            minScores = (int)((int)type * _heart * 50);
+            minScores = (int)((int)type * _heart * 100) + 100;
             this.Load();
         }
         public override Rectangle Bounds
@@ -68,15 +66,22 @@ namespace GameFire.Enemy
         #region Load & unLoad
         protected override void Load()
         {
+            Texture2D textureDie;
             switch ((int)type)
             {
                 case 1:
                     _skin = _content.Load<Texture2D>("Enemy/chickenGreen");
+                    sourceRectSkin = new Rectangle(_desRectSkin.Width * indexNow, 0, _desRectSkin.Width, _desRectSkin.Height);
+                    break;
+                case 2:
+                    _skin = _content.Load<Texture2D>("Enemy/chickenRed");
+                    _desRectSkin.Size = new Point(_skin.Width / 10, _skin.Height);
+                    sourceRectSkin = new Rectangle(_desRectSkin.Width * indexNow, 0, _desRectSkin.Width, _desRectSkin.Height);
                     break;
                 default:
                     break;
             }
-            Texture2D textureDie = _content.Load<Texture2D>("Enemy/dead");
+            textureDie = _content.Load<Texture2D>("Enemy/dead");
             Rectangle desRectDie = new Rectangle(Point.Zero, new Point(32, 32));
             //animation die
             this.textureDies = new Texture2D[] { textureDie, textureDie, textureDie, textureDie, textureDie };
@@ -205,6 +210,5 @@ namespace GameFire.Enemy
             }
         }
         #endregion
-
     }
 }

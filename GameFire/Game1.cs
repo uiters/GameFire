@@ -67,7 +67,6 @@ namespace GameFire
             {
                 gamePlay.Update(gameTime);
             }
-
             base.Update(gameTime);
         }
 

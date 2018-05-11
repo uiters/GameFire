@@ -53,8 +53,7 @@ namespace GameFire.MapPlay
         }
         #endregion
 
-
-        #region Private Method
+        #region Private Method Map 1
 
         /// <summary>
         /// Starting when start map
@@ -136,7 +135,7 @@ namespace GameFire.MapPlay
                     {
                         if (timeNow > 1500.0f && random.Next(0, 25) == 5)
                         {
-                            chicken.Speed = new Vector2(random.Next(-5, 5), random.Next(-7, 7));
+                            chicken.Speed = new Vector2(random.Next(-7, 7), random.Next(-10, 10));
                         }
                     }
                     chicken.Location += chicken.Speed.ToPoint();
@@ -167,11 +166,11 @@ namespace GameFire.MapPlay
             float y = 0;
             if (location.Y < 10 * _index.Y) // touch the upper corner
             {
-                y = random.Next(1, 7); // chicken move down
+                y = random.Next(2, 10); // chicken move down
             }
             else if (location.Y > 95 * _index.Y) // touch the bottom corner
             {
-                y = random.Next(-7, -1); // chicken move up
+                y = random.Next(-10, -2); // chicken move up
             }
             else
             {
@@ -184,11 +183,11 @@ namespace GameFire.MapPlay
             float x = 0;
             if (location.X < 15 * _index.X) // touch the left corner
             {
-                x = random.Next(3, 5);
+                x = random.Next(3, 7);
             }
             else if (location.X > 95 * _index.X) // touch the right corner
             {
-                x = random.Next(-5, -2);
+                x = random.Next(-7, -3);
             }
             else
             {
@@ -199,8 +198,11 @@ namespace GameFire.MapPlay
         }
         #endregion
 
-        #endregion
 
+
+
+
+        #endregion
 
         #region Initialize
         internal override void Initialize()
@@ -213,7 +215,7 @@ namespace GameFire.MapPlay
             {
                 Vector2 speed = new Vector2(random.Next(1, 5), random.Next(1, 10));
                 Rectangle location = new Rectangle(new Point(-10 * (int)_index.X, 10 * (int)_index.Y), new Point(47, 38));
-                Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, 2) { Tag = 1 };
+                Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenRed, 2) { Tag = 1 };
                 _chickens.Add(chicken);
             }
 
