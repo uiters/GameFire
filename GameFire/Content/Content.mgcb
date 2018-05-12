@@ -331,3 +331,93 @@
 /processorParam:Quality=Best
 /build:Music/dead.ogg
 
+#begin Music/chicken/Chick_hurt1.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/chicken/Chick_hurt1.ogg
+
+#begin Music/chicken/Chicken_death1.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/chicken/Chicken_death1.ogg
+
+#begin Music/chicken/Chicken_death2.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/chicken/Chicken_death2.ogg
+
+#begin Music/chicken/Chicken_death3.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/chicken/Chicken_death3.ogg
+
+#begin Music/chicken/Chicken_death4.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/chicken/Chicken_death4.ogg
+
+#begin Music/chicken/Chicken_hurt2.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/chicken/Chicken_hurt2.ogg
+
+#begin Music/chicken/Chicken_lay.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/chicken/Chicken_lay.ogg
+
+#begin Music/Quit.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/Quit.ogg
+
+#begin Music/chicken/Egg_break.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/chicken/Egg_break.ogg
+
+#begin Music/chicken/Chicken_hurt1.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/chicken/Chicken_hurt1.ogg
+
+#begin Music/chicken/Egg_break1.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Music/chicken/Egg_break1.ogg
+
+#begin Enemy/chickenParachute.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Enemy/chickenParachute.png
+
+#begin Enemy/chickenParachuteRed.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Enemy/chickenParachuteRed.png
+

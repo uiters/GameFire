@@ -7,6 +7,7 @@ namespace GameFire.MapPlay
 {
     public class Scores
     {
+
         #region Properties
         private long scoresPlay;
         private int length;
@@ -87,7 +88,16 @@ namespace GameFire.MapPlay
         }
         private void UnLoad()
         {
-
+            indexPre.Clear();
+            indexNow.Clear();
+            desRectNumber.Clear();
+            sourceRectNumer.Clear();
+            indexPre = null;
+            indexNow = null;
+            desRectNumber = null;
+            sourceRectNumer = null;
+            content = null;
+            _skin = null;
         }
         #endregion
 
@@ -129,6 +139,11 @@ namespace GameFire.MapPlay
         }
         #endregion
 
-
+        #region Destructor
+        ~Scores()
+        {
+            UnLoad();
+        }
+        #endregion
     }
 }

@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-
+using Microsoft.Xna.Framework.Audio;
 namespace GameFire.Enemy
 {
     public enum TypeChiken
@@ -25,6 +25,10 @@ namespace GameFire.Enemy
         private Rectangle[] desRectDies;
         private Rectangle sourceRectSkin;
 
+        private SoundEffect soundDying;
+        private SoundEffect soundLaying;
+        private SoundEffect soundHurt;
+
         public int Scores
         {
             get
@@ -41,6 +45,15 @@ namespace GameFire.Enemy
         public bool IsAlive { get => _heart > 0; }
         public Vector2 Speed { get => _speed; set => _speed = value; }
         public object Tag { get; set; }
+        public override Rectangle Bounds
+        {
+            get
+            {
+                Rectangle rectangle = new Rectangle(_desRectSkin.Location + new Point(5, 5), _desRectSkin.Size - new Point(10, 10));
+                return rectangle;
+            }
+        }
+
         #endregion
 
         #region Constructor
@@ -52,14 +65,6 @@ namespace GameFire.Enemy
             totalTime = 0.0f;
             minScores = (int)((int)type * _heart * 100) + 100;
             this.Load();
-        }
-        public override Rectangle Bounds
-        {
-            get
-            {
-                Rectangle rectangle = new Rectangle(_desRectSkin.Location + new Point(5,5), _desRectSkin.Size - new Point(10,10));
-                return rectangle;
-            }
         }
         #endregion
 
@@ -75,7 +80,7 @@ namespace GameFire.Enemy
                     break;
                 case 2:
                     _skin = _content.Load<Texture2D>("Enemy/chickenRed");
-                    _desRectSkin.Size = new Point(_skin.Width / 10, _skin.Height);
+                    _desRectSkin.Size = new Point(_skin.Width / 10, _desRectSkin.Height);
                     sourceRectSkin = new Rectangle(_desRectSkin.Width * indexNow, 0, _desRectSkin.Width, _desRectSkin.Height);
                     break;
                 default:
@@ -86,6 +91,39 @@ namespace GameFire.Enemy
             //animation die
             this.textureDies = new Texture2D[] { textureDie, textureDie, textureDie, textureDie, textureDie };
             this.desRectDies = new Rectangle[] { desRectDie, desRectDie, desRectDie, desRectDie, desRectDie };
+            LoadSound();
+        }
+
+        private void LoadSound()
+        {
+            switch (_random.Next(0, 5))
+            {
+                case 0:
+                    soundDying = _content.Load<SoundEffect>("Music/chicken/Chicken_death1");
+                    break;
+                case 1:
+                    soundDying = _content.Load<SoundEffect>("Music/chicken/Chicken_death2");
+                    break;
+                case 3:
+                    soundDying = _content.Load<SoundEffect>("Music/chicken/Chicken_death3");
+                    break;
+                default:
+                    soundDying = _content.Load<SoundEffect>("Music/chicken/Chicken_death4");
+                    break;
+            }
+            switch (_random.Next(0,4))
+            {
+                case 0:
+                    soundHurt = _content.Load<SoundEffect>("Music/chicken/Chicken_hurt1");
+                    break;
+                case 1:
+                    soundHurt = _content.Load<SoundEffect>("Music/chicken/Chicken_hurt2");
+                    break;
+                default:
+                    soundHurt = _content.Load<SoundEffect>("Music/chicken/Chick_hurt1");
+                    break;
+            }
+            soundLaying = _content.Load<SoundEffect>("Music/chicken/Chicken_lay");
         }
 
         protected override void Unload()
@@ -94,6 +132,9 @@ namespace GameFire.Enemy
             {
                 textureDies[i] = null;
             }
+            soundHurt = null;
+            soundLaying = null;
+            soundDying = null;
             base.Unload();
         }
         #endregion
@@ -172,6 +213,7 @@ namespace GameFire.Enemy
         {
             if (_heart <= 0.0f)
             {
+                soundDying.Play();
                 for (int i = 0; i < desRectDies.Length; i++)
                 {
                     Point randomLocation = new Point(_random.Next(-15, 15), _random.Next(-15, 15));
@@ -181,6 +223,7 @@ namespace GameFire.Enemy
             }
             else
             {
+                soundHurt.Play();
                 isAttacked = true;
                 _desRectSkin.Location = new Point(_desRectSkin.X, _desRectSkin.Y - 4);
                 return 0;
@@ -202,12 +245,20 @@ namespace GameFire.Enemy
         {
             if(_random.Next(0, 750) == 100)
             {
+                soundLaying.Play();
                 return new Egg(_content, new Vector2(0, _random.Next(2, 10)), _index, new Rectangle(_desRectSkin.Center + new Point(-10 , 0), new Point(20,20)), this.type);
             }
             else
             {
                 return null;
             }
+        }
+        #endregion
+
+        #region destructor
+        ~Chicken()
+        {
+            Unload();
         }
         #endregion
     }

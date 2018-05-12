@@ -19,6 +19,7 @@ namespace GameFire.MapPlay
         private Scores scores;
         private Map1 map1;
         private Song song;
+        private ChickenParachute chicken;
         #endregion
 
         #region Contructor
@@ -28,8 +29,8 @@ namespace GameFire.MapPlay
             this.content = content;
             ship = new Ship(content, Vector2.Zero, index);
             chickens = new List<Chicken>();
-            map1 = new Map1(content, index, chickens, IsPlay, screen);
-
+            //map1 = new Map1(content, index, chickens, IsPlay, screen);
+            chicken = new ChickenParachute(content, new Vector2(2, 2), index, new Rectangle(new Point(150, 0), new Point(58, 80)), TypeChiken.ChickenGreen, 100);
             eggs = new List<Egg>();
             scores = new Scores(content);
             Load();
@@ -42,6 +43,19 @@ namespace GameFire.MapPlay
             song = content.Load<Song>("Music/backgroundMap");
             MediaPlayer.Volume = 0.5f;
             MediaPlayer.Play(song);
+        }
+        private void Unload()
+        {
+            ship = null;
+            chickens.Clear();
+            eggs.Clear();
+            MediaPlayer.Stop();
+            song = null;
+            scores = null;
+            map1 = null;
+            eggs = null;
+            chickens = null;
+            content = null;
         }
         #endregion
 
@@ -64,6 +78,7 @@ namespace GameFire.MapPlay
             DrawChickens(gameTime, spriteBatch);
             DrawEggs(gameTime, spriteBatch);
             DrawScores(gameTime, spriteBatch);
+            chicken.Draw(gameTime, spriteBatch, Color.White);
         }
 
 
@@ -231,7 +246,8 @@ namespace GameFire.MapPlay
         #region Map
         private void UpdateMap(GameTime gameTime)
         {
-            map1.Update(gameTime);
+            chicken.Update(gameTime);
+            //map1.Update(gameTime);
         }
         #endregion
     }

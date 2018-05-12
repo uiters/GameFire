@@ -39,7 +39,7 @@ namespace GameFire.bullet
         #region Destructor
         ~GameObject()
         {
-            Unload();
+
         }
         #endregion
 

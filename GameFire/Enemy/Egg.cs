@@ -1,5 +1,6 @@
 ﻿using GameFire.bullet;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -16,6 +17,8 @@ namespace GameFire.Enemy
         private Texture2D textureBreak;
         private Rectangle desRectBreak;
         private Rectangle sourceRectBreak;
+
+        private SoundEffect soundBreak;
 
         public bool IsBreak { get => isBreak; private set => isBreak = value; }
 
@@ -46,12 +49,22 @@ namespace GameFire.Enemy
                 default:
                     break;
             }
+            switch (_random.Next(0,2))
+            {
+                case 0:
+                    soundBreak = _content.Load<SoundEffect>("Music/chicken/Egg_break");
+                    break;
+                default:
+                    soundBreak = _content.Load<SoundEffect>("Music/chicken/Egg_break1");
+                    break;
+            }
             desRectBreak = new Rectangle(0, 0, textureBreak.Bounds.Width / 8, textureBreak.Height);
             sourceRectBreak = desRectBreak;
         }
         protected override void Unload()
         {
             textureBreak = null;
+            soundBreak = null ;
             base.Unload();
         }
         #endregion
@@ -73,6 +86,7 @@ namespace GameFire.Enemy
                     else
                     {
                         IsBreak = true;
+                        soundBreak.Play(0.5f, 0, 0);
                         desRectBreak.Location = _desRectSkin.Location;
                     }
                 }
@@ -113,5 +127,11 @@ namespace GameFire.Enemy
         }
         #endregion
 
+        #region Destructor
+        ~Egg()
+        {
+            Unload();
+        }
+        #endregion
     }
 }

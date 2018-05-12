@@ -14,12 +14,12 @@ namespace GameFire.bullet
         #region Properties
 
         #region Protect Ship
-        private float timeApear = 0f;
+        private float timeApear;
         private bool isProtect = true;
         private Texture2D textureProtect;
         private Rectangle desProtect; 
-        private float rotationProtect = 0.0f;
-        private float scale = 0.0f;
+        private float rotationProtect;
+        private float scale;
         private bool isMaxBig = false;
         private Vector2 origin;
 
@@ -49,7 +49,10 @@ namespace GameFire.bullet
         public Ship(ContentManager content, Vector2 speed, Vector2 index) : base(content, speed, index, Rectangle.Empty)
         {
             _heart = 30;
+            timeApear = 0;
+            rotationProtect = 0;
             level = 1;
+            scale = 0;
             this.Visible = false;
             desRectDie = new Rectangle();
             desProtect = new Rectangle();
@@ -64,10 +67,16 @@ namespace GameFire.bullet
             textureProtect = _content.Load<Texture2D>("procted");
             MouseState mouse = Mouse.GetState();
             _desRectSkin = new Rectangle(mouse.X, mouse.Y, 72, 71);
-            origin = new Vector2(textureProtect.Width / 2, textureProtect.Height / 2);
+            origin = textureProtect.Bounds.Center.ToVector2(); // new Vector2(textureProtect.Width / 2, textureProtect.Height / 2);
             Bullets = new List<Bullet>();
             textureDie = _content.Load<Texture2D>("shipDie");
             soundDie = _content.Load<SoundEffect>("Music/dead");
+        }
+        protected override void Unload()
+        {
+            soundDie = null;
+            textureProtect = null;
+            base.Unload();
         }
         #endregion
 
@@ -136,7 +145,6 @@ namespace GameFire.bullet
                 if (IsProtect == true)
                 {
                     rotationProtect += 0.15f;
-
                     desProtect.X = _desRectSkin.X + 35;
                     desProtect.Y = _desRectSkin.Y + 40;
                     desProtect.Width = (int)(112 + 112 * scale);
@@ -211,7 +219,7 @@ namespace GameFire.bullet
         #region Bullet
         private void BulletClick(MouseState mouse, KeyboardState keyboard)
         {
-            if(timeDelay >= 150.0f)
+            if(timeDelay >= 175.0f)
             {
                 if (mouse.LeftButton == ButtonState.Pressed || keyboard.IsKeyDown(Keys.Space))
                 {
@@ -296,7 +304,7 @@ namespace GameFire.bullet
         #region Destructor
         ~Ship()
         {
-            textureProtect = null;
+            Unload();
         }
         #endregion
 

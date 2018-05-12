@@ -41,6 +41,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Enemy\ChickenParachute.cs" />
     <Compile Include="MapPlay\Map.cs" />
     <Compile Include="Control\Scores.cs" />
     <Compile Include="Enemy\Chicken.cs" />

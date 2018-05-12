@@ -11,6 +11,7 @@ namespace GameFire.button
         protected Rectangle _destRectanleClick;
         protected Rectangle _sourceRectangle;
         protected Texture2D _skin;
+
         protected int _index;
         protected bool _visible;
         protected bool _isMouseHover;
@@ -80,7 +81,6 @@ namespace GameFire.button
             }
         }
         #endregion
-
 
     }
 }

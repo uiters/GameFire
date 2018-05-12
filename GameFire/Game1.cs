@@ -1,6 +1,4 @@
-﻿using GameFire.bullet;
-using GameFire.MapPlay;
-using GameFire.Enemy;
+﻿using GameFire.MapPlay;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -8,11 +6,10 @@ using System;
 
 namespace GameFire
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
+
     public class Game1 : Game
     {
+        #region Properties
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private Texture2D bacground;
@@ -21,19 +18,22 @@ namespace GameFire
         private GameUI gameUI;
         private GamePlay gamePlay;
         private float timeColect;
+        #endregion
+
+        #region Constructor
         public Game1()
         {
             LoadUI();
         }
-
-
         protected override void Initialize()
         {
             index.X = graphics.PreferredBackBufferWidth / 100;
             index.Y = graphics.PreferredBackBufferHeight / 100;
             base.Initialize();
         }
+        #endregion
 
+        #region Load & unload
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -45,13 +45,20 @@ namespace GameFire
 
         protected override void UnloadContent()
         {
-
+            graphics.Dispose();
+            spriteBatch.Dispose();
+            bacground.Dispose();
+            gameUI = null;
+            gamePlay = null;
+            GC.Collect();
         }
+        #endregion
 
+        #region Method
         protected override void Update(GameTime gameTime)
         {
             timeColect += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if(timeColect >= 30000.0f)
+            if (timeColect >= 20000.0f)
             {
                 timeColect = 0.0f;
                 GC.Collect();
@@ -69,8 +76,6 @@ namespace GameFire
             }
             base.Update(gameTime);
         }
-
-
         protected override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin(SpriteSortMode.FrontToBack);
@@ -97,7 +102,7 @@ namespace GameFire
             int height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             //graphics.PreferredBackBufferWidth = 1920;
             //graphics.PreferredBackBufferHeight = 1080;
-            if(width > 1024)
+            if (width > 1024)
             {
                 graphics.PreferredBackBufferWidth = (int)(width * 0.325);
                 graphics.PreferredBackBufferHeight = (int)(height * 0.9);
@@ -115,6 +120,6 @@ namespace GameFire
             this.TargetElapsedTime = new System.TimeSpan(0, 0, 0, 0, 33);
             this.IsMouseVisible = true;
         }
-        
+        #endregion
     }
 }

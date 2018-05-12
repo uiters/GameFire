@@ -25,14 +25,6 @@ namespace GameFire.bullet
         }
         #endregion
 
-        #region Destructor
-        ~Bullet()
-        {
-
-        }
-
-        #endregion
-
         #region Load & unload
         protected override void Load()
         {
@@ -60,10 +52,11 @@ namespace GameFire.bullet
                     return;
             }
             songFire = _content.Load<SoundEffect>("Music/bullet/a");
-            songFire.Play(0.75f, 0, 0);
+            songFire.Play(0.35f, 0, 0);
         }
         protected override void Unload()
         {
+            songFire = null;
             base.Unload();
         }
         #endregion
@@ -92,5 +85,12 @@ namespace GameFire.bullet
         }
         #endregion
 
+        #region Destructor
+        ~Bullet()
+        {
+            Unload();
+        }
+
+        #endregion
     }
 }
