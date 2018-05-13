@@ -1,11 +1,8 @@
 ﻿using GameFire.bullet;
-using GameFire.MapPlay;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
 
 namespace GameFire.Enemy
 {
@@ -14,32 +11,39 @@ namespace GameFire.Enemy
         #region Properties
         private TypeChiken type;
         private float totalTime;
-        private int minScores;
-        private bool isAttacked;
-        private Chicken chicken;
-        private bool isAlive;
+        private float timeAttacked;
+
+        private bool isAttack;
 
         private float rotation;
         private Vector2 origin;
 
-        private float distance;
+        private float shake;
 
 
         private SoundEffect soundDying;
         private SoundEffect soundHurt;
 
-        public Chicken Chicken { get => chicken; }
+        /// <summary>
+        /// return bound of chicken
+        /// </summary>
+        public override Rectangle Bounds
+        {
+            get => new Rectangle(_desRectSkin.X - _desRectSkin.Width / 2, _desRectSkin.Y - _desRectSkin.Height / 2, _desRectSkin.Width, _desRectSkin.Height);
+        }
         #endregion
 
         #region Constructor
-        public ChickenParachute(ContentManager content, Vector2 speed, Vector2 index, Rectangle location, TypeChiken type, float heart) 
+        public ChickenParachute(ContentManager content, Vector2 speed, Vector2 index, Rectangle location, TypeChiken type, float heart)
             : base(content, speed, index, location)
         {
-            this.distance = 0.01f;
-            isAlive = true;
-            this.rotation = _random.Next(-2, 2) / _random.Next(1 , 4);
-            chicken = new Chicken(content, speed, index, new Rectangle(location.Location, new Point(47, 38)), TypeChiken.ChickenRed, 2);
-            Load();
+            this.shake = 0.0085f;
+            this.rotation = _random.Next(-1, 1) / _random.Next(4, 8);
+            this._minScores = (int)((int)type * _heart * 100) + 100;
+            this._heart = heart;
+            this.type = type;
+            this.isAttack = false;
+            this.Load();
         }
         #endregion
 
@@ -47,12 +51,11 @@ namespace GameFire.Enemy
         protected override void Load()
         {
             _skin = _content.Load<Texture2D>("Enemy/chickenParachute");
-            origin = _skin.Bounds.Center.ToVector2();
+            origin = (_skin.Bounds.Center.ToVector2());
             LoadSound();
         }
         protected override void Unload()
         {
-            chicken = null;
             soundDying = null;
             soundHurt = null;
             base.Unload();
@@ -92,24 +95,23 @@ namespace GameFire.Enemy
         #region Method
         public override void Update(GameTime gameTime)
         {
-            if(Visible)
+            if (Visible)
             {
-                if (isAlive)
-                {
-                    ChickenFall(gameTime);
-                }
-                else
-                {
-                    if (chicken.IsAlive)
-                        chicken.Update(gameTime);
-                    else
-                        Visible = false;
-                }
+                _timeLive += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                ChickenFall(gameTime);
+                if (isAttack)
+                    AnimationAttacked(gameTime);
             }
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Color color)
         {
-            spriteBatch.Draw(_skin, _desRectSkin, null, Color.White, rotation, origin, SpriteEffects.None, 1);
+            if (!Visible) return;
+            else
+                spriteBatch.Draw(_skin, _desRectSkin, null, Color.White, rotation, origin, SpriteEffects.None, 0);
+        }
+        public Chicken GetChicken()
+        {          
+            return new Chicken(_content, _index, _index, new Rectangle(Bounds.Location, Point.Zero), type , _random.Next(2, 5));
         }
         #endregion
 
@@ -119,10 +121,68 @@ namespace GameFire.Enemy
             totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             if (totalTime > 30f)
             {
-                _desRectSkin.Y += (int)_speed.Y;
-                distance = (rotation > 0.3f || rotation < -0.3f) ? -distance : distance;
-                rotation += distance;
+                totalTime = 0;
+               _desRectSkin.Y += (int)_speed.Y;
+                shake = (rotation > 0.195f || rotation < -0.195f) ? -shake : shake;
+                rotation += shake;
             }
+            if (_desRectSkin.Y > 105 * _index.Y)
+                Visible = false;
+        }
+        public int Attacked(Bullet bullet)
+        {
+            bullet.Visible = false;
+            this._heart -= bullet.Damage;
+            return GetScores(bullet);
+        }
+        public int Attacked(Ship ship)
+        {
+            this._heart -= 1.0f;
+            return GetScores(ship);
+        }
+        private int GetScores(Bullet bullet)
+        {
+            if (_heart <= 0.0f)
+            {
+                soundDying.Play();
+                return Scores;
+            }
+            else
+            {
+                soundHurt.Play();
+                isAttack = true;
+                return 0;
+            }
+        }
+        private int GetScores(Ship ship)
+        {
+            if (_heart <= 0.0f)
+            {
+                soundDying.Play();
+                return Scores;
+            }
+            else
+            {
+                soundHurt.Play();
+                return 0;
+            }
+        }
+        private void AnimationAttacked(GameTime gameTime)
+        {
+            timeAttacked += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if(timeAttacked > 30.0f)
+            {
+                _desRectSkin.Y -= 4;
+                isAttack = false;
+                timeAttacked = 0.0f;
+            }
+        }
+        #endregion
+
+        #region Destructor
+        ~ChickenParachute()
+        {
+            Unload();
         }
         #endregion
     }

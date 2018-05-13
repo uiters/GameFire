@@ -76,8 +76,10 @@ namespace GameFire.bullet
         {
             if (_speed.Y <= maxSpeed)
                 _speed.Y += _speed.Y * 0.05f;
-            if (_desRectSkin.Y >= -10)
-                _desRectSkin.Location = (_desRectSkin.Location.ToVector2() - _speed).ToPoint();
+            if (_desRectSkin.Y > -75)
+            {
+                _desRectSkin.Y -= (int)_speed.Y;
+            }
             else
             {
                 this.Visible = false;

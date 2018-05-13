@@ -17,6 +17,19 @@ namespace GameFire.bullet
         protected bool _visible;
         protected bool _isMove;
         protected float _heart;
+        protected float _timeLive;
+        protected int _minScores;
+
+        virtual public int Scores
+        {
+            get
+            {
+                _visible = false;
+                int extraScores = (_timeLive < 4) ? _random.Next(_minScores * 2 / 3, _minScores * 2) : _random.Next(_minScores / (int)(_timeLive / 2), _minScores);
+                return extraScores + _minScores;
+            }
+        }
+
         virtual public Rectangle Bounds
         {
             get => _desRectSkin;

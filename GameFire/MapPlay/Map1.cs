@@ -9,22 +9,34 @@ namespace GameFire.MapPlay
     public class Map1 : Map
     {
         #region Properties
+        protected List<Chicken> chickens;
         private readonly Random random = new Random();
-        private readonly int maxRowChicken = 10;
         private Rectangle screen;
         private byte mode = 0;
         private float totalTime;
         private float timeNow;
         private bool isLeft;
 
-        private int Count { get => _chickens.Count; }
+        public int Count { get => chickens.Count; }
+        public override bool IsClean
+        {
+            get
+            {
+                if ((_isClean == false && Count == 0) || _isClean)
+                {
+                    _isClean = true;
+                    return _isClean;
+                }
+                else return false;
+            }
+        }
         #endregion
 
         #region Constructor
         public Map1(ContentManager content, Vector2 index, List<Chicken> chickens, bool isPlay, Rectangle screen) : base(content, index, isPlay)
         {
             this.screen = screen;
-            _chickens = chickens;
+            this.chickens = chickens;
             Initialize();
         }
 
@@ -51,6 +63,10 @@ namespace GameFire.MapPlay
                     break;
             }
         }
+        public void AddChicken(Chicken chicken)
+        {
+            chickens.Add(chicken);
+        }
         #endregion
 
         #region Private Method Map 1
@@ -72,18 +88,18 @@ namespace GameFire.MapPlay
                 totalTime = 0.0f;
                 for (int i = 0; i < Count; i++)
                 {
-                    if (_chickens[i].Visible)
+                    if (chickens[i].Visible)
                     {
-                        int row = (int)_chickens[i].Tag;
+                        int row = (int)chickens[i].Tag;
                         if (row % 2 == 1)
                         {
                             row = (row == 1) ? i + 1 : row * 10 - i;
-                            _chickens[i].Location += new Point(row, 0);
+                            chickens[i].Location += new Point(row, 0);
                         }
                         else
                         {
                             row = row * 10 - i;
-                            _chickens[i].Location -= new Point(row, 0);
+                            chickens[i].Location -= new Point(row, 0);
                         }
                     }
                 }
@@ -94,7 +110,7 @@ namespace GameFire.MapPlay
         /// </summary>
         private void Playing()
         {
-            if (Count >= 20 && timeNow < 30000f)
+            if (Count >= 20 && timeNow < 3000f)
             {
                 if(totalTime >= 30.0f)
                 {
@@ -103,12 +119,12 @@ namespace GameFire.MapPlay
                         isLeft = !isLeft;
                         totalTime = 0;
                     }
-                    foreach (Chicken chicken in _chickens)
+                    for (int i = 0; i < Count; i++)
                     {
                         if (isLeft)
-                            chicken.Location += new Point(2, 0);
+                            chickens[i].Location += new Point(2, 0);
                         else
-                            chicken.Location -= new Point(2, 0);
+                            chickens[i].Location -= new Point(2, 0);
                     }
                 }
             }
@@ -127,18 +143,18 @@ namespace GameFire.MapPlay
             if (totalTime >= 30.0f)
             {
                 totalTime = 0.0f;
-                foreach (Chicken chicken in _chickens)
+                for (int i = 0; i < Count; i++)
                 {
-                    if (screen.Contains(chicken.Bounds) == false)
-                        chicken.Speed = CalculatePoint(chicken.Bounds);
+                    if (screen.Contains(chickens[i].Bounds) == false)
+                        chickens[i].Speed = CalculatePoint(chickens[i].Bounds);
                     else
                     {
                         if (timeNow > 1500.0f && random.Next(0, 25) == 5)
                         {
-                            chicken.Speed = new Vector2(random.Next(-7, 7), random.Next(-10, 10));
+                            chickens[i].Speed = new Vector2(random.Next(-7, 7), random.Next(-10, 10));
                         }
                     }
-                    chicken.Location += chicken.Speed.ToPoint();
+                    chickens[i].Location += chickens[i].Speed.ToPoint();
                 }
                 if(timeNow > 1500.0f)
                     timeNow = 0.0f;
@@ -168,7 +184,7 @@ namespace GameFire.MapPlay
             {
                 y = random.Next(2, 10); // chicken move down
             }
-            else if (location.Y > 95 * _index.Y) // touch the bottom corner
+            else if (location.Y > 90 * _index.Y) // touch the bottom corner
             {
                 y = random.Next(-10, -2); // chicken move up
             }
@@ -181,11 +197,11 @@ namespace GameFire.MapPlay
         private float CalculateX(Point location)
         {
             float x = 0;
-            if (location.X < 15 * _index.X) // touch the left corner
+            if (location.X < 10 * _index.X) // touch the left corner
             {
                 x = random.Next(3, 7);
             }
-            else if (location.X > 95 * _index.X) // touch the right corner
+            else if (location.X > 90 * _index.X) // touch the right corner
             {
                 x = random.Next(-7, -3);
             }
@@ -198,10 +214,6 @@ namespace GameFire.MapPlay
         }
         #endregion
 
-
-
-
-
         #endregion
 
         #region Initialize
@@ -211,59 +223,59 @@ namespace GameFire.MapPlay
             //--------------------------------
             // Chicken row 1
             //--------------------------------
-            for (int i = 0; i < maxRowChicken; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Vector2 speed = new Vector2(random.Next(1, 5), random.Next(1, 10));
                 Rectangle location = new Rectangle(new Point(-10 * (int)_index.X, 10 * (int)_index.Y), new Point(47, 38));
                 Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenRed, 2) { Tag = 1 };
-                _chickens.Add(chicken);
+                chickens.Add(chicken);
             }
 
 
             //--------------------------------
             // Chicken row 2
             //--------------------------------
-            for (int i = 0; i < maxRowChicken; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Vector2 speed = new Vector2(random.Next(1, 5), random.Next(1, 10));
                 Rectangle location = new Rectangle(new Point(110 * (int)_index.X, 20 * (int)_index.Y), new Point(47, 38));
                 Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, 2) { Tag = 2 };
-                _chickens.Add(chicken);
+                chickens.Add(chicken);
             }
 
 
             //--------------------------------
             // Chicken row 3
             //--------------------------------
-            for (int i = 0; i < maxRowChicken; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Vector2 speed = new Vector2(random.Next(1, 5), random.Next(1, 10));
                 Rectangle location = new Rectangle(new Point(-10 * (int)_index.X, 30 * (int)_index.Y), new Point(47, 38));
                 Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, 2) { Tag = 3 };
-                _chickens.Add(chicken);
+                chickens.Add(chicken);
             }
 
 
             //--------------------------------
             // Chicken row 4
             //--------------------------------
-            for (int i = 0; i < maxRowChicken; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Vector2 speed = new Vector2(random.Next(1, 5), random.Next(1, 10));
                 Rectangle location = new Rectangle(new Point(110 * (int)_index.X, 40 * (int)_index.Y), new Point(47, 38));
                 Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, 2) { Tag = 4 };
-                _chickens.Add(chicken);
+                chickens.Add(chicken);
             }
 
             //--------------------------------
             // Chicken row 5
             //--------------------------------
-            for (int i = 0; i < maxRowChicken; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Vector2 speed = new Vector2(random.Next(1, 5), random.Next(1, 10));
                 Rectangle location = new Rectangle(new Point(-10 * (int)_index.X, 50 * (int)_index.Y), new Point(47, 38));
                 Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, 2) { Tag = 5 };
-                _chickens.Add(chicken);
+                chickens.Add(chicken);
             }
 
         }

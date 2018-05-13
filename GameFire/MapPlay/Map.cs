@@ -8,10 +8,11 @@ namespace GameFire.MapPlay
     public class Map
     {
         #region Properties
-        protected List<Chicken> _chickens;
         protected ContentManager _content;
         protected Vector2 _index;
         protected bool _isPlay;
+        protected bool _isClean;
+        public virtual bool IsClean { get; set; }
         #endregion
 
         #region Constructor

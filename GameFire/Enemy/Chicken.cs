@@ -9,6 +9,9 @@ namespace GameFire.Enemy
     {
         ChickenGreen = 1,
         ChickenRed = 2,
+        ChickenParachuteGreen = 1,
+        ChickenParachuteRed = 2,
+        BossChickenRed = 3
 
     }
     public class Chicken : GameObject
@@ -18,8 +21,6 @@ namespace GameFire.Enemy
         private float totalTime;
         private sbyte indexNow;
         private bool isAttacked;
-        private float timeLive;
-        private int minScores;
 
         private Texture2D[] textureDies;
         private Rectangle[] desRectDies;
@@ -29,14 +30,6 @@ namespace GameFire.Enemy
         private SoundEffect soundLaying;
         private SoundEffect soundHurt;
 
-        public int Scores
-        {
-            get
-            {
-                int extraScores = (timeLive < 4) ? _random.Next(minScores * 2 / 3, minScores * 2) : _random.Next(minScores / (int) (timeLive / 2), minScores);
-                return extraScores + minScores;
-            }
-        }
         public Point Location
         {
             get => _desRectSkin.Location;
@@ -53,7 +46,6 @@ namespace GameFire.Enemy
                 return rectangle;
             }
         }
-
         #endregion
 
         #region Constructor
@@ -63,7 +55,7 @@ namespace GameFire.Enemy
             this._heart = heart;
             indexNow =(sbyte) _random.Next(0, 19);
             totalTime = 0.0f;
-            minScores = (int)((int)type * _heart * 100) + 100;
+            _minScores = (int)((int)type * _heart * 100) + 100;
             this.Load();
         }
         #endregion
@@ -76,12 +68,30 @@ namespace GameFire.Enemy
             {
                 case 1:
                     _skin = _content.Load<Texture2D>("Enemy/chickenGreen");
-                    sourceRectSkin = new Rectangle(_desRectSkin.Width * indexNow, 0, _desRectSkin.Width, _desRectSkin.Height);
+                    if(_desRectSkin.Size == Point.Zero)
+                    {
+                        _desRectSkin.Width = 47;
+                        _desRectSkin.Height = _skin.Height;
+                    }
+                    sourceRectSkin = new Rectangle(47 * indexNow, 0, 47, _skin.Height);
                     break;
                 case 2:
                     _skin = _content.Load<Texture2D>("Enemy/chickenRed");
-                    _desRectSkin.Size = new Point(_skin.Width / 10, _desRectSkin.Height);
-                    sourceRectSkin = new Rectangle(_desRectSkin.Width * indexNow, 0, _desRectSkin.Width, _desRectSkin.Height);
+                    if(_desRectSkin.Size == Point.Zero)
+                    {
+                        _desRectSkin.Width = 40;
+                        _desRectSkin.Height = _skin.Height;
+                    }
+                    sourceRectSkin = new Rectangle(40 * indexNow, 0, 40 , _skin.Height);
+                    break;
+                case 3:
+                    _skin = _content.Load<Texture2D>("Enemy/bossRed");
+                    if(_desRectSkin.Size == Point.Zero)
+                    {
+                        _desRectSkin.Width = 75;
+                        _desRectSkin.Height = 68;
+                    }
+                    sourceRectSkin = new Rectangle(75 * indexNow, 0, 75, _skin.Height);
                     break;
                 default:
                     break;
@@ -144,7 +154,7 @@ namespace GameFire.Enemy
         {
             if (!Visible)
                 return;
-            timeLive +=(float) gameTime.ElapsedGameTime.TotalSeconds;
+            _timeLive +=(float) gameTime.ElapsedGameTime.TotalSeconds;
             if(_heart > 0)
             {
                 AnimationFly(gameTime);
@@ -199,6 +209,7 @@ namespace GameFire.Enemy
         /// <returns></returns>
         public int Attacked(Bullet bullet)
         {
+            bullet.Visible = false;
             this._heart -= bullet.Damage;
             return GetScores();
         }
@@ -236,7 +247,7 @@ namespace GameFire.Enemy
             if (totalTime >= 70.0f)
             {
                 indexNow = (++indexNow >= 19) ? (sbyte)0 : indexNow;
-                sourceRectSkin.X = _desRectSkin.Width * ((indexNow > 9) ? 19 - indexNow : indexNow);
+                sourceRectSkin.X = sourceRectSkin.Width * ((indexNow > 9) ? 19 - indexNow : indexNow);
                 totalTime = 0.0f;
             }
         }
@@ -246,7 +257,18 @@ namespace GameFire.Enemy
             if(_random.Next(0, 750) == 100)
             {
                 soundLaying.Play();
-                return new Egg(_content, new Vector2(0, _random.Next(2, 10)), _index, new Rectangle(_desRectSkin.Center + new Point(-10 , 0), new Point(20,20)), this.type);
+                Point sizeEgg;
+                int sizeX;
+                if (type == TypeChiken.BossChickenRed)
+                {
+                    sizeEgg = new Point(25, 25);
+                }
+                else
+                {
+                    sizeX = 2 * _desRectSkin.Width / 5;
+                    sizeEgg = new Point(sizeX, sizeX);
+                }          
+                return new Egg(_content, new Vector2(0, _random.Next(2, 10)), _index, new Rectangle(_desRectSkin.Center + new Point(-sizeEgg.X / 2, 0) , sizeEgg), this.type);
             }
             else
             {

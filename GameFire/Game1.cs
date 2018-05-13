@@ -27,8 +27,8 @@ namespace GameFire
         }
         protected override void Initialize()
         {
-            index.X = graphics.PreferredBackBufferWidth / 100;
-            index.Y = graphics.PreferredBackBufferHeight / 100;
+            index.X = graphics.PreferredBackBufferWidth / 100.0f;
+            index.Y = graphics.PreferredBackBufferHeight / 100.0f;
             base.Initialize();
         }
         #endregion
@@ -39,7 +39,7 @@ namespace GameFire
             spriteBatch = new SpriteBatch(GraphicsDevice);
             bacground = this.Content.Load<Texture2D>("background/background");
             gameUI = new GameUI(Content, index);
-            gamePlay = new GamePlay(Content, index, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight));
+            gamePlay = new GamePlay(Content, index, boxBackGround);
             //ship = new Ship(Content, Vector2.Zero, index);
         }
 
@@ -58,7 +58,7 @@ namespace GameFire
         protected override void Update(GameTime gameTime)
         {
             timeColect += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (timeColect >= 20000.0f)
+            if (timeColect >= 15000.0f)
             {
                 timeColect = 0.0f;
                 GC.Collect();
@@ -73,6 +73,7 @@ namespace GameFire
             else
             {
                 gamePlay.Update(gameTime);
+                boxBackGround = gamePlay.Screen;
             }
             base.Update(gameTime);
         }

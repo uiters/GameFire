@@ -41,15 +41,23 @@ namespace GameFire.Enemy
                 case 1:
                     _skin = _content.Load<Texture2D>("Enemy/egg");
                     textureBreak = _content.Load<Texture2D>("Enemy/eggBreak");
+
                     break;
                 case 2:
                     _skin = _content.Load<Texture2D>("Enemy/egg_1");
                     textureBreak = _content.Load<Texture2D>("Enemy/eggBreak_1");
                     break;
                 default:
+                    _skin = _content.Load<Texture2D>("Enemy/egg");
+                    textureBreak = _content.Load<Texture2D>("Enemy/eggBreak");
                     break;
             }
-            switch (_random.Next(0,2))
+            if (_desRectSkin.Size == Point.Zero)
+            {
+                _desRectSkin.Width = _skin.Width;
+                _desRectSkin.Height = _skin.Height;
+            }
+                switch (_random.Next(0,2))
             {
                 case 0:
                     soundBreak = _content.Load<SoundEffect>("Music/chicken/Egg_break");
@@ -81,8 +89,10 @@ namespace GameFire.Enemy
                 }
                 else
                 {
-                    if (_desRectSkin.Y < (_index.Y * 99))
-                        _desRectSkin.Location += _speed.ToPoint();
+                    if (_desRectSkin.Y < (_index.Y * 97))
+                    {
+                        _desRectSkin.Y +=(int) _speed.Y;
+                    }
                     else
                     {
                         IsBreak = true;
