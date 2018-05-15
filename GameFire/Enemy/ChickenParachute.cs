@@ -110,8 +110,8 @@ namespace GameFire.Enemy
                 spriteBatch.Draw(_skin, _desRectSkin, null, Color.White, rotation, origin, SpriteEffects.None, 0);
         }
         public Chicken GetChicken()
-        {          
-            return new Chicken(_content, _index, _index, new Rectangle(Bounds.Location, Point.Zero), type , _random.Next(2, 5));
+        {
+            return new Chicken(_content, new Vector2(_random.Next(-10, 10), _random.Next(-20, 20)), _index, new Rectangle(Bounds.Location, Point.Zero), type, _random.Next(1, 3));
         }
         #endregion
 

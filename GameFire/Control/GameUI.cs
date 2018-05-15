@@ -24,6 +24,7 @@ namespace GameFire
     internal class GameUI
     {
         #region Properties
+        private bool isFullHD;
         private List<Button> buttons;
         private Texture2D skin;
         private Texture2D logo;
@@ -41,18 +42,17 @@ namespace GameFire
         public List<Button> Buttons { get => buttons; private set => buttons = value; }
         #endregion
 
-
         #region Constructor
-        public GameUI(ContentManager content, Vector2 index)
+        public GameUI(ContentManager content, Vector2 index, bool isFullHD)
         {
             Buttons = new List<Button>();
             this.index = index;
+            this.isFullHD = isFullHD;
             visible = true;
             Load(content);
             Initialize();
         }
         #endregion
-
 
         #region Load & unload
         private void Load(ContentManager content)
@@ -70,7 +70,6 @@ namespace GameFire
             soundClick = null;
         }
         #endregion
-
 
         #region Method
         public void Draw(SpriteBatch spriteBatch, Color color)
@@ -237,11 +236,14 @@ namespace GameFire
             //=======================================
             //Logo
             //=======================================
-            desRectLogo = new Rectangle((int)index.X * 15, (int)index.Y * 15, 440, 240);
-
+            if (isFullHD)
+                desRectLogo = new Rectangle((int)index.X * 15, (int)index.Y * 15, 440, 240);
+            else
+            {
+                desRectLogo = new Rectangle((int)index.X * 2, (int)index.Y * 15, 440, 240);            
+            }
         }
         #endregion
-
 
         #region Destructor
         ~GameUI()

@@ -50,6 +50,7 @@
     <Compile Include="MapPlay\Map2.cs" />
     <Compile Include="Player\Bullet.cs" />
     <Compile Include="Player\GameObject.cs" />
+    <Compile Include="Player\Give.cs" />
     <Compile Include="Player\Ship.cs" />
     <Compile Include="button\Button.cs" />
     <Compile Include="Control\GamePlay.cs" />

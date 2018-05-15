@@ -5,15 +5,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 
-
 namespace GameFire.bullet
 {
     public class Ship : GameObject
     {
 
         #region Properties
-
-        #region Protect Ship
         private float timeApear;
         private bool isProtect = true;
         private Texture2D textureProtect;
@@ -22,25 +19,35 @@ namespace GameFire.bullet
         private float scale;
         private bool isMaxBig = false;
         private Vector2 origin;
-
         private float totalTime;
-
+        private int level;
         private Texture2D textureDie;
         private Rectangle desRectDie;
         private bool isDeading;
-
         private SoundEffect soundDie;
+        private List<Bullet> bullets;
+        private float timeDelay = 0.0f;
+
+
 
         public bool IsProtect { get => isProtect; private set => isProtect = value; }
         public int Heart { get => (int)_heart; set => _heart = value; }
         public bool IsDeading { get => isDeading; }
-        #endregion
-
         #region Bullet
-        private List<Bullet> bullets;
-        private float timeDelay = 0.0f;
-        private int level;
         public List<Bullet> Bullets { get => bullets; private set => bullets = value; }
+        public int Level
+        {
+            get => level;
+            set
+            {
+                if (value < 1)
+                    level = 1;
+                else
+                {
+                    level = value;
+                }
+            }
+        }
         #endregion
 
         #endregion
@@ -223,8 +230,7 @@ namespace GameFire.bullet
             {
                 if (mouse.LeftButton == ButtonState.Pressed || keyboard.IsKeyDown(Keys.Space))
                 {
-
-                    Bullet bullet = new Bullet(_content, new Vector2(0, 10.0f), _index, new Rectangle(_desRectSkin.Center + new Point(-5, -31), new Point(10, 35)), 1);
+                    Bullet bullet = new Bullet(_content, new Vector2(0, 10.0f), _index, _desRectSkin, level);
                     _desRectSkin = new Rectangle(_desRectSkin.X, _desRectSkin.Y + 5, _desRectSkin.Width, _desRectSkin.Height);
                     Bullets.Add(bullet);
                     timeDelay = 0.0f;
@@ -257,18 +263,18 @@ namespace GameFire.bullet
             if (_desRectSkin.Top < 31)
                 _desRectSkin.Y = 31;
             else
-            if (_desRectSkin.Bottom >= _index.Y * 100 + 31)
-                _desRectSkin.Y = (int)_index.Y * 100 - 31;
+            if (_desRectSkin.Bottom >= _index.Y * 95)
+                _desRectSkin.Y = (int)_index.Y * 95;
             if (_desRectSkin.Left < 0)
                 _desRectSkin.X = 0;
             else
-                if (_desRectSkin.Right > (int)(_index.X * 100 + 31))
-                _desRectSkin.X = (int)(_index.X * 100 - 31);
+                if (_desRectSkin.Right >= (_index.X * 96) + 32)
+                _desRectSkin.X = (int)(_index.X * 95) - 32;
         }
         
         private bool CheckMouseIsOut(MouseState mouse)
         {
-            return (mouse.X < 0) || (mouse.Y < 0) || (mouse.X > _index.X * 100);// || (mouse.Y > _index.Y * 100);
+            return (mouse.X < 0) || (mouse.Y < 0) || (mouse.X > _index.X * 100);
         }
         #endregion
 
@@ -307,6 +313,5 @@ namespace GameFire.bullet
             Unload();
         }
         #endregion
-
     }
 }

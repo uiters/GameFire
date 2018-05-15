@@ -117,7 +117,6 @@ namespace GameFire.Enemy
                 }
             }
         }
-
         private void AnimationBreak(GameTime gameTime)
         {
             totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;

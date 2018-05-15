@@ -18,6 +18,7 @@ namespace GameFire
         private GameUI gameUI;
         private GamePlay gamePlay;
         private float timeColect;
+        private bool isFullHD;
         #endregion
 
         #region Constructor
@@ -38,7 +39,7 @@ namespace GameFire
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             bacground = this.Content.Load<Texture2D>("background/background");
-            gameUI = new GameUI(Content, index);
+            gameUI = new GameUI(Content, index, isFullHD);
             gamePlay = new GamePlay(Content, index, boxBackGround);
             //ship = new Ship(Content, Vector2.Zero, index);
         }
@@ -101,22 +102,20 @@ namespace GameFire
             graphics.SynchronizeWithVerticalRetrace = false;
             int width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             int height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            //graphics.PreferredBackBufferWidth = 1920;
-            //graphics.PreferredBackBufferHeight = 1080;
-            if (width > 1024)
+            if (width > 1366)
             {
                 graphics.PreferredBackBufferWidth = (int)(width * 0.325);
                 graphics.PreferredBackBufferHeight = (int)(height * 0.9);
+                isFullHD = true;
             }
             else
             {
-                graphics.PreferredBackBufferWidth = (int)(width * 0.5);
-                graphics.PreferredBackBufferHeight = (int)(height * 0.875);
+                isFullHD = false;
+                graphics.PreferredBackBufferWidth = (int)(width * 0.325);
+                graphics.PreferredBackBufferHeight = (int)(height * 0.9);
             }
 
             Window.Position = new Point((width / 2) - (graphics.PreferredBackBufferWidth / 2), (height / 2) - (graphics.PreferredBackBufferHeight / 2));
-            //boxBackGround = new Rectangle(0, 0, 800, 900);
-            //graphics.IsFullScreen = true;
             boxBackGround = new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
             this.TargetElapsedTime = new System.TimeSpan(0, 0, 0, 0, 33);
             this.IsMouseVisible = true;

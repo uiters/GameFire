@@ -16,10 +16,18 @@ namespace GameFire.bullet
         #endregion
 
         #region Constructor
+
+        /// <summary>
+        /// position  is Rectangle of Ship
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="speed"></param>
+        /// <param name="index"></param>
+        /// <param name="position"> is Rectangle Ship</param>
+        /// <param name="level"></param>
         public Bullet(ContentManager content, Vector2 speed, Vector2 index, Rectangle position, int level) : base(content, speed, index, position)
         {
-            this.level = level;
-            
+            this.level = level;     
             this.damage = level;
             Load();
         }
@@ -31,7 +39,7 @@ namespace GameFire.bullet
             switch (level)
             {
                 case 1:
-                    _skin = _content.Load<Texture2D>("bullet/a1");
+                    _skin = _content.Load<Texture2D>("bullet/a1");                  
                     break;
                 case 2:
                     _skin = _content.Load<Texture2D>("bullet/a2");
@@ -49,8 +57,16 @@ namespace GameFire.bullet
                     _skin = _content.Load<Texture2D>("bullet/b3");
                     break;
                 default:
-                    return;
+                    _skin = _content.Load<Texture2D>("bullet/a3");
+                    break;
             }
+            _desRectSkin.X = _desRectSkin.Center.X;
+
+            _desRectSkin.Width = _skin.Width * 2;
+            _desRectSkin.Height = (int)(_skin.Height * 2.5);
+
+            _desRectSkin.X -= _desRectSkin.Width / 2 ;
+
             songFire = _content.Load<SoundEffect>("Music/bullet/a");
             songFire.Play(0.35f, 0, 0);
         }

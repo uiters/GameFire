@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using GameFire.Player;
+
 namespace GameFire.Enemy
 {
     public enum TypeChiken
@@ -224,7 +226,7 @@ namespace GameFire.Enemy
         {
             if (_heart <= 0.0f)
             {
-                soundDying.Play();
+                soundDying.Play(0.875f, 0, 0);
                 for (int i = 0; i < desRectDies.Length; i++)
                 {
                     Point randomLocation = new Point(_random.Next(-15, 15), _random.Next(-15, 15));
@@ -234,7 +236,7 @@ namespace GameFire.Enemy
             }
             else
             {
-                soundHurt.Play();
+                soundHurt.Play(0.875f, 0, 0);
                 isAttacked = true;
                 _desRectSkin.Location = new Point(_desRectSkin.X, _desRectSkin.Y - 4);
                 return 0;
@@ -256,7 +258,7 @@ namespace GameFire.Enemy
         {
             if(_random.Next(0, 750) == 100)
             {
-                soundLaying.Play();
+                soundLaying.Play(0.65f, 0, 0);
                 Point sizeEgg;
                 int sizeX;
                 if (type == TypeChiken.BossChickenRed)
@@ -274,6 +276,15 @@ namespace GameFire.Enemy
             {
                 return null;
             }
+        }
+
+        public Give CrateGive()
+        {
+
+            if (_random.Next(1, 25) == 5)
+                return new Give(_content, new Vector2(0, _random.Next(2, 6)), _index, new Rectangle(Bounds.Location, Point.Zero));
+            else
+                return null;
         }
         #endregion
 

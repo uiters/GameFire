@@ -1,5 +1,6 @@
 ﻿using GameFire.bullet;
 using GameFire.Enemy;
+using GameFire.Player;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,8 +24,7 @@ namespace GameFire.MapPlay
         private Map2 map2;
         private Song song;
         private List<ChickenParachute> chickenParachutes;
-        private int currentMap;
-
+        private List<Give> gives;
         private Vector2 index;
         private Rectangle screen;
         private bool isLeft;
@@ -32,8 +32,9 @@ namespace GameFire.MapPlay
         private bool isShipDie;
         private float timeShake;
         private float totalTimeShake;
-        #endregion
+        private int currentMap;
 
+        #endregion
 
         #region Contructor
         public GamePlay(ContentManager content, Vector2 index, Rectangle screen)
@@ -47,6 +48,7 @@ namespace GameFire.MapPlay
             chickenParachutes = new List<ChickenParachute>();
             map1 = new Map1(content, index, chickens, IsPlay, screen);
             map2 = new Map2(content, index, chickenParachutes, IsPlay, screen);
+            gives = new List<Give>();
             eggs = new List<Egg>();
             scores = new Scores(content);
             currentMap = 1;
@@ -88,11 +90,13 @@ namespace GameFire.MapPlay
                 UpdateChickens(gameTime);
                 UpdateEggs(gameTime);
                 UpdateScores(gameTime);
+                UpdateGives(gameTime);
                 if(currentMap == 2)
                     UpdateMap2(gameTime);
                 UpdateChickenParachutes(gameTime);
                 if (map1.IsClean == true && currentMap < 2)
                     currentMap++;
+                
                 if (isShipDie)
                     ScreenShake(gameTime);
             }
@@ -101,6 +105,7 @@ namespace GameFire.MapPlay
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {  
             DrawChickens(gameTime, spriteBatch);
+            DrawGives(gameTime, spriteBatch);
             DrawEggs(gameTime, spriteBatch);
             DrawScores(gameTime, spriteBatch);            
             DrawChickenParachutes(gameTime, spriteBatch);
@@ -113,6 +118,7 @@ namespace GameFire.MapPlay
         #region Check Collision
         private bool ShipCollision()
         {
+            ShipCollisionGive();
             return ShipCollisionChicken() || ShipCollisionEgg() || ShipCollisionChickenParachute();
         }
 
@@ -129,6 +135,9 @@ namespace GameFire.MapPlay
                 {
                     scores.ScoresPlay += chicken.Attacked(ship.Bullets[i]);
                     ship.Bullets.RemoveAt(i--);
+                    Give give = chicken.CrateGive();
+                    if (give != null)
+                        gives.Add(give);
                     return true;
                 }
             }
@@ -156,6 +165,8 @@ namespace GameFire.MapPlay
 
         private bool ShipCollisionChicken()
         {
+            Rectangle rect1 = new Rectangle(ship.Bounds.Location + new Point(32, 5), new Point(13, 33));
+            Rectangle rect2 = new Rectangle(ship.Bounds.Location + new Point(10, 37), new Point(62, 35));
             for (int i = 0; i < chickens.Count; i++)
             {
                 if (!chickens[i].Visible) // chicken dead
@@ -165,10 +176,7 @@ namespace GameFire.MapPlay
                 }
                 else
                 if (!ship.IsDeading && chickens[i].IsAlive && !ship.IsProtect) // collision with chicken
-                {
-                    Rectangle rect1 = new Rectangle(ship.Bounds.Location + new Point(32, 5), new Point(13, 33));
-                    Rectangle rect2 = new Rectangle(ship.Bounds.Location + new Point(10, 37), new Point(62, 35));
-
+                {                  
                     if (rect1.Intersects(chickens[i].Bounds) || rect2.Intersects(chickens[i].Bounds))
                     {
                         scores.ScoresPlay += chickens[i].Attacked(ship);
@@ -180,6 +188,8 @@ namespace GameFire.MapPlay
         }
         private bool ShipCollisionEgg()
         {
+            Rectangle rect1 = new Rectangle(ship.Bounds.Location + new Point(32, 5), new Point(13, 33));
+            Rectangle rect2 = new Rectangle(ship.Bounds.Location + new Point(10, 37), new Point(62, 35));
             for (int i = 0; i < eggs.Count; i++)
             {
                 if (!eggs[i].Visible)
@@ -190,9 +200,7 @@ namespace GameFire.MapPlay
                 else
                 {
                     if (!eggs[i].IsBreak && !ship.IsProtect)
-                    {
-                        Rectangle rect1 = new Rectangle(ship.Bounds.Location + new Point(32, 5), new Point(13, 33));
-                        Rectangle rect2 = new Rectangle(ship.Bounds.Location + new Point(10, 37), new Point(62, 35));
+                    {                        
                         if (rect1.Intersects(eggs[i].Bounds) || rect2.Intersects(eggs[i].Bounds))
                         {
                             eggs.RemoveAt(i);
@@ -205,6 +213,8 @@ namespace GameFire.MapPlay
         }
         private bool ShipCollisionChickenParachute()
         {
+            Rectangle rect1 = new Rectangle(ship.Bounds.Location + new Point(32, 5), new Point(13, 33));
+            Rectangle rect2 = new Rectangle(ship.Bounds.Location + new Point(10, 37), new Point(62, 35));
             for (int i = 0; i < chickenParachutes.Count; i++)
             {
                 if (!chickenParachutes[i].Visible) // chicken dead
@@ -213,9 +223,7 @@ namespace GameFire.MapPlay
                     continue;
                 }
                 else if (!ship.IsDeading && chickenParachutes[i].Visible && !ship.IsProtect)
-                {
-                    Rectangle rect1 = new Rectangle(ship.Bounds.Location + new Point(32, 5), new Point(13, 33));
-                    Rectangle rect2 = new Rectangle(ship.Bounds.Location + new Point(10, 37), new Point(62, 35));
+                {                   
                     if (rect1.Intersects(chickenParachutes[i].Bounds) || rect2.Intersects(chickenParachutes[i].Bounds))
                     {
                         scores.ScoresPlay += chickenParachutes[i].Attacked(ship);
@@ -224,6 +232,31 @@ namespace GameFire.MapPlay
                 }
             }
             return false;
+        }
+        private void ShipCollisionGive()
+        {
+            for (int i = 0; i < gives.Count; i++)
+            {
+                if (!gives[i].Visible) // chicken dead
+                {
+                    gives.RemoveAt(i--);
+                    continue;
+                }
+                else if(!ship.IsDeading)
+                {
+                    Rectangle rect1 = new Rectangle(ship.Bounds.Location + new Point(32, 5), new Point(13, 33));
+                    Rectangle rect2 = new Rectangle(ship.Bounds.Location + new Point(10, 37), new Point(62, 35));
+                    if (rect1.Intersects(gives[i].Bounds) || rect2.Intersects(gives[i].Bounds))
+                    {
+                        gives[i].Visible = false;
+                        ship.Level += 1;
+                        gives[i].SoundPlay();
+                        gives.RemoveAt(i--);
+                        
+                        continue;
+                    }
+                }
+            }
         }
 
         #endregion
@@ -235,6 +268,7 @@ namespace GameFire.MapPlay
             if(ShipCollision() == true)
             {
                 isShipDie = true;
+                ship.Level /= 2;
                 ship.Dead();
                 ship.SoundDeadPlay();
             }
@@ -332,6 +366,20 @@ namespace GameFire.MapPlay
         {
             scores.Draw(gameTime, spriteBatch);
         }
+        #endregion
+
+        #region Gives
+        private void UpdateGives(GameTime gameTime)
+        {
+            for (int i = 0; i < gives.Count; i++)
+                gives[i].Update(gameTime);
+        }
+        private void DrawGives(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            for (int i = 0; i < gives.Count; i++)
+                gives[i].Draw(gameTime, spriteBatch, Color.White);
+        }
+        
         #endregion
 
         #region Map 1

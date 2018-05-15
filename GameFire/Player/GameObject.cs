@@ -35,7 +35,7 @@ namespace GameFire.bullet
             get => _desRectSkin;
         }
 
-        public bool Visible { get => _visible; set => _visible = value; }
+        virtual public bool Visible { get => _visible; set => _visible = value; }
         #endregion
 
         #region Constructor
