@@ -149,7 +149,7 @@ namespace GameFire.MapPlay
                         chickens[i].Speed = CalculatePoint(chickens[i].Bounds);
                     else
                     {
-                        if (timeNow > 1500.0f && random.Next(0, 25) == 5)
+                        if (timeNow > 1500.0f && random.Next(0, 5) == 2)
                         {
                             chickens[i].Speed = new Vector2(random.Next(-7, 7), random.Next(-10, 10));
                         }
@@ -186,7 +186,7 @@ namespace GameFire.MapPlay
             }
             else if (location.Y > 85 * _index.Y) // touch the bottom corner
             {
-                y = random.Next(-10, -2); // chicken move up
+                y = random.Next(-10, -5); // chicken move up
             }
             else
             {
@@ -199,11 +199,11 @@ namespace GameFire.MapPlay
             float x = 0;
             if (location.X < 10 * _index.X) // touch the left corner
             {
-                x = random.Next(3, 7);
+                x = random.Next(5, 9);
             }
             else if (location.X > 90 * _index.X) // touch the right corner
             {
-                x = random.Next(-7, -3);
+                x = random.Next(-10, -5);
             }
             else
             {
@@ -227,7 +227,7 @@ namespace GameFire.MapPlay
             {
                 Vector2 speed = new Vector2(random.Next(1, 5), random.Next(1, 10));
                 Rectangle location = new Rectangle(new Point(-10 * (int)_index.X, 10 * (int)_index.Y), new Point(47, 38));
-                Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, random.Next(1, 3)) { Tag = 1 };
+                Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, random.Next(1, 5)) { Tag = 1 };
                 chickens.Add(chicken);
             }
 
@@ -239,7 +239,7 @@ namespace GameFire.MapPlay
             {
                 Vector2 speed = new Vector2(random.Next(1, 5), random.Next(1, 10));
                 Rectangle location = new Rectangle(new Point(110 * (int)_index.X, 20 * (int)_index.Y), new Point(47, 38));
-                Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, random.Next(1, 3)) { Tag = 2 };
+                Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, random.Next(1, 5)) { Tag = 2 };
                 chickens.Add(chicken);
             }
 
@@ -251,7 +251,7 @@ namespace GameFire.MapPlay
             {
                 Vector2 speed = new Vector2(random.Next(1, 5), random.Next(1, 10));
                 Rectangle location = new Rectangle(new Point(-10 * (int)_index.X, 30 * (int)_index.Y), new Point(47, 38));
-                Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, random.Next(1, 3)) { Tag = 3 };
+                Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, random.Next(1, 5)) { Tag = 3 };
                 chickens.Add(chicken);
             }
 
@@ -263,7 +263,7 @@ namespace GameFire.MapPlay
             {
                 Vector2 speed = new Vector2(random.Next(1, 5), random.Next(1, 10));
                 Rectangle location = new Rectangle(new Point(110 * (int)_index.X, 40 * (int)_index.Y), new Point(47, 38));
-                Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, random.Next(1, 3)) { Tag = 4 };
+                Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, random.Next(1, 5)) { Tag = 4 };
                 chickens.Add(chicken);
             }
 
@@ -274,10 +274,18 @@ namespace GameFire.MapPlay
             {
                 Vector2 speed = new Vector2(random.Next(1, 5), random.Next(1, 10));
                 Rectangle location = new Rectangle(new Point(-10 * (int)_index.X, 50 * (int)_index.Y), new Point(47, 38));
-                Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, random.Next(1, 3)) { Tag = 5 };
+                Chicken chicken = new Chicken(_content, speed, _index, location, TypeChiken.ChickenGreen, random.Next(1, 5)) { Tag = 5 };
                 chickens.Add(chicken);
             }
 
+        }
+        #endregion
+
+        #region Destructor
+        ~Map1()
+        {
+            chickens.Clear();
+            chickens = null;
         }
         #endregion
     }

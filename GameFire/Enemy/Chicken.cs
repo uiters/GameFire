@@ -278,11 +278,11 @@ namespace GameFire.Enemy
             }
         }
 
-        public Give CrateGive()
+        public Gift CrateGif()
         {
 
-            if (_random.Next(1, 25) == 5)
-                return new Give(_content, new Vector2(0, _random.Next(2, 6)), _index, new Rectangle(Bounds.Location, Point.Zero));
+            if (_random.Next(0, 75) == 15)
+                return new Gift(_content, new Vector2(0, _random.Next(2, 6)), _index, new Rectangle(Bounds.Location, Point.Zero));
             else
                 return null;
         }

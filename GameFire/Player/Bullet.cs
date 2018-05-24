@@ -12,6 +12,7 @@ namespace GameFire.bullet
         private int level;
         private readonly float maxSpeed = 100.0f;
         private SoundEffect songFire;
+        //private List<Texture2D> 
         public float Damage { get => damage; private set => damage = value; }
         #endregion
 
@@ -39,34 +40,34 @@ namespace GameFire.bullet
             switch (level)
             {
                 case 1:
-                    _skin = _content.Load<Texture2D>("bullet/a1");                  
+                    _skin = _content.Load<Texture2D>("bullet/a1");
+                    InitializeLevel3();
                     break;
                 case 2:
                     _skin = _content.Load<Texture2D>("bullet/a2");
+                    InitializeLevel3();
                     break;
                 case 3:
                     _skin = _content.Load<Texture2D>("bullet/a3");
+                    InitializeLevel3();
                     break;
-                case 10:
-                    _skin = _content.Load<Texture2D>("bullet/b1");
-                    break;
-                case 11:
-                    _skin = _content.Load<Texture2D>("bullet/b2");
-                    break;
-                case 12:
-                    _skin = _content.Load<Texture2D>("bullet/b3");
-                    break;
+                //case 4:
+
+                //case 10:
+                //    _skin = _content.Load<Texture2D>("bullet/b1");
+                //    break;
+                //case 11:
+                //    _skin = _content.Load<Texture2D>("bullet/b2");
+                //    break;
+                //case 12:
+                //    _skin = _content.Load<Texture2D>("bullet/b3");
+                //    break;
                 default:
                     _skin = _content.Load<Texture2D>("bullet/a3");
+                    InitializeLevel3();
                     break;
+
             }
-            _desRectSkin.X = _desRectSkin.Center.X;
-
-            _desRectSkin.Width = _skin.Width * 2;
-            _desRectSkin.Height = (int)(_skin.Height * 2.5);
-
-            _desRectSkin.X -= _desRectSkin.Width / 2 ;
-
             songFire = _content.Load<SoundEffect>("Music/bullet/a");
             songFire.Play(0.35f, 0, 0);
         }
@@ -100,6 +101,19 @@ namespace GameFire.bullet
             {
                 this.Visible = false;
             }
+        }
+        #endregion
+
+        #region InitializeLevel
+        /// <summary>
+        /// Initialize bullet level < four
+        /// </summary>
+        private void InitializeLevel3()
+        {
+            _desRectSkin.X = _desRectSkin.Center.X;
+            _desRectSkin.Width = _skin.Width * 2;
+            _desRectSkin.Height = (int)(_skin.Height * 2.5);
+            _desRectSkin.X -= _desRectSkin.Width / 2;
         }
         #endregion
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GameFire.button;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,15 +27,9 @@ namespace GameFire.bullet
         private bool isDeading;
         private SoundEffect soundDie;
         private List<Bullet> bullets;
+        private List<Button> hearts;
         private float timeDelay = 0.0f;
 
-
-
-        public bool IsProtect { get => isProtect; private set => isProtect = value; }
-        public int Heart { get => (int)_heart; set => _heart = value; }
-        public bool IsDeading { get => isDeading; }
-        #region Bullet
-        public List<Bullet> Bullets { get => bullets; private set => bullets = value; }
         public int Level
         {
             get => level;
@@ -48,6 +43,12 @@ namespace GameFire.bullet
                 }
             }
         }
+        public bool IsProtect { get => isProtect; private set => isProtect = value; }
+        public int Heart { get => (int)_heart; set { _heart = value; if (_heart <= 0) _visible = false; } }
+        public bool IsDeading { get => isDeading; }
+        #region Bullet
+        public List<Bullet> Bullets { get => bullets; private set => bullets = value; }
+        public List<Button> Hearts { get => hearts; set => hearts = value; }
         #endregion
 
         #endregion
@@ -55,7 +56,7 @@ namespace GameFire.bullet
         #region Constructor
         public Ship(ContentManager content, Vector2 speed, Vector2 index) : base(content, speed, index, Rectangle.Empty)
         {
-            _heart = 30;
+            _heart = 3;
             timeApear = 0;
             rotationProtect = 0;
             level = 1;
@@ -63,6 +64,7 @@ namespace GameFire.bullet
             this.Visible = false;
             desRectDie = new Rectangle();
             desProtect = new Rectangle();
+            hearts = new List<Button>();
             Load();
         }
         #endregion
@@ -78,11 +80,30 @@ namespace GameFire.bullet
             Bullets = new List<Bullet>();
             textureDie = _content.Load<Texture2D>("shipDie");
             soundDie = _content.Load<SoundEffect>("Music/dead");
+            LoadHearts();
+        }
+        private void LoadHearts()
+        {
+            Rectangle rectHeart = Rectangle.Empty;
+            rectHeart.Width = 51;
+            rectHeart.Height = 51;
+            rectHeart.X =(int)(90 * _index.X);
+            for (int i = 0; i < _heart; i++)
+            {
+                Texture2D texture = _content.Load<Texture2D>("background/heart");
+                Button heart = new Button(texture, rectHeart) { IsChangeColor = false, SourceRectangle = new Rectangle(0, 0, 512, 512) };
+                rectHeart.X -= 50;
+                hearts.Add(heart);
+            }
         }
         protected override void Unload()
         {
             soundDie = null;
             textureProtect = null;
+            bullets.Clear();
+            bullets = null;
+            hearts.Clear();
+            hearts = null;
             base.Unload();
         }
         #endregion
@@ -122,7 +143,7 @@ namespace GameFire.bullet
                         totalTime = 0.0f;
                     }
                     if(!CheckMouseIsOut(mouse))
-                    timeDelay += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                        timeDelay += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                     this.BulletClick(mouse, keyboard);
                 }
             }
@@ -133,7 +154,6 @@ namespace GameFire.bullet
                     _desRectSkin = new Rectangle((int)_index.X * 45, (int)_index.Y * 110, 72, 71);
                     Visible = true;
                     _isMove = false;
-                    --_heart;
                 }
             }
 
@@ -142,6 +162,7 @@ namespace GameFire.bullet
         {
             if (!Visible)
                 return;
+            this.DrawHearts(gameTime, spriteBatch);
             this.DrawBullet(gameTime, spriteBatch);
             if (isDeading == true)
             {
@@ -169,6 +190,7 @@ namespace GameFire.bullet
                 isDeading = true;
                 desRectDie.Location = this._desRectSkin.Location + new Point(31, 31);
                 desRectDie.Size = new Point(40, 40);
+                _heart -= 1;
             }
 
 
@@ -226,15 +248,15 @@ namespace GameFire.bullet
         #region Bullet
         private void BulletClick(MouseState mouse, KeyboardState keyboard)
         {
-            if(timeDelay >= 175.0f)
+            if(timeDelay > 155.0f)
             {
-                if (mouse.LeftButton == ButtonState.Pressed || keyboard.IsKeyDown(Keys.Space))
-                {
+                //if (mouse.LeftButton == ButtonState.Pressed || keyboard.IsKeyDown(Keys.Space))
+                //{
                     Bullet bullet = new Bullet(_content, new Vector2(0, 10.0f), _index, _desRectSkin, level);
                     _desRectSkin = new Rectangle(_desRectSkin.X, _desRectSkin.Y + 5, _desRectSkin.Width, _desRectSkin.Height);
                     Bullets.Add(bullet);
                     timeDelay = 0.0f;
-                }
+                //}
             }            
         }
         private void UpdateBullet(GameTime gameTime)
@@ -304,6 +326,16 @@ namespace GameFire.bullet
         public void SoundDeadPlay()
         {
             soundDie.Play(0.75f, 0, 0);
+        }
+        #endregion
+
+        #region Hearts
+        private void DrawHearts(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            for (int i = 0; i < _heart; i++)
+            {
+                hearts[i].Draw(spriteBatch);
+            }
         }
         #endregion
 

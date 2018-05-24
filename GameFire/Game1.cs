@@ -3,10 +3,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace GameFire
 {
-
     public class Game1 : Game
     {
         #region Properties
@@ -64,17 +64,27 @@ namespace GameFire
                 timeColect = 0.0f;
                 GC.Collect();
             }
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-            if (gameUI.Visible == true)
+            if (gameUI.Visible)
             {
                 gameUI.Update(gameTime);
                 this.IsMouseVisible = gameUI.Visible;
             }
             else
             {
-                gamePlay.Update(gameTime);
-                boxBackGround = gamePlay.Screen;
+                if (gamePlay.Visible)
+                {
+                    gamePlay.Update(gameTime);
+                    boxBackGround = gamePlay.Screen;
+                    if (gamePlay.IsEndGame && IsMouseVisible == false)
+                    {
+                        this.IsMouseVisible = true;
+                    }
+                }
+                else
+                {
+                    gameUI.Visible = true;
+                    gamePlay.Recycle();
+                }
             }
             base.Update(gameTime);
         }
@@ -85,7 +95,7 @@ namespace GameFire
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             if (gameUI.Visible == true)
-                gameUI.Draw(spriteBatch, Color.White);
+                gameUI.Draw(spriteBatch);
             else
             {
                 gamePlay.Draw(gameTime, spriteBatch);

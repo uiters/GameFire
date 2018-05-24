@@ -96,7 +96,7 @@ namespace GameFire.Enemy
                     else
                     {
                         IsBreak = true;
-                        soundBreak.Play(0.5f, 0, 0);
+                        soundBreak.Play(0.75f, 0, 0);
                         desRectBreak.Location = _desRectSkin.Location;
                     }
                 }
@@ -130,7 +130,7 @@ namespace GameFire.Enemy
                 else
                 {
                     totalTime = 0;
-                    sourceRectBreak.Location = new Point(desRectBreak.Width * ++indexNow, 0);
+                    sourceRectBreak.X = desRectBreak.Width * ++indexNow;
                 }
             }
         }

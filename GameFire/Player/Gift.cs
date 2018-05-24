@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 namespace GameFire.Player
 {
-    public class Give :GameObject
+    public class Gift :GameObject
     {
         #region Properties
         private sbyte indexNow;
@@ -22,7 +22,7 @@ namespace GameFire.Player
         /// <param name="speed"></param>
         /// <param name="index"></param>
         /// <param name="location"></param>
-        public Give(ContentManager content, Vector2 speed, Vector2 index, Rectangle location ) : base(content, speed, index, location)
+        public Gift(ContentManager content, Vector2 speed, Vector2 index, Rectangle location ) : base(content, speed, index, location)
         {
             this._isMove = false;
             indexNow =(sbyte) _random.Next(0, 26);

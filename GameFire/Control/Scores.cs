@@ -25,6 +25,14 @@ namespace GameFire.MapPlay
             {
                 if (scoresPlay == value) return;
                 scoresPlay = value;
+                if(value == 0)
+                {
+                    this.length = 1;
+                    indexNow[0] = 0;
+                    indexPre[0] = 0;
+                    sourceRectNumer[0] = new Rectangle(0, 0, sourceRectNumer[0].Width, sourceRectNumer[0].Height);
+                    return;
+                }
                 length = 0;
                 long scores = value;
                 while (scores != 0)
@@ -76,7 +84,6 @@ namespace GameFire.MapPlay
             indexNow.Add(0);
             indexPre.Add(0);
             length++;
-
         }
 
         #endregion

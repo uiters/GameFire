@@ -2,6 +2,7 @@
 using GameFire.Enemy;
 using GameFire.Player;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -14,6 +15,9 @@ namespace GameFire.MapPlay
         #region Properties
         public bool IsPlay { get; set; }
         public Rectangle Screen { get => screen; private set => screen = value; }
+        //public List<Button> Buttons { set => buttons = value; }
+        public bool Visible { get => visible; set => visible = value; }
+        public bool IsEndGame { get => alreadySet; }
 
         private Ship ship;
         private List<Chicken> chickens;
@@ -24,7 +28,15 @@ namespace GameFire.MapPlay
         private Map2 map2;
         private Song song;
         private List<ChickenParachute> chickenParachutes;
-        private List<Give> gives;
+        private List<Gift> gifts;
+        private float timeEnd;
+        private Rectangle rectEndGame;
+        private Texture2D skinEndGame;
+        private bool isWin;
+
+        private SoundEffect soundLose;
+        private SoundEffect soundWin;
+        //private List<Button> buttons;
         private Vector2 index;
         private Rectangle screen;
         private bool isLeft;
@@ -33,7 +45,8 @@ namespace GameFire.MapPlay
         private float timeShake;
         private float totalTimeShake;
         private int currentMap;
-
+        private bool alreadySet;
+        private bool visible;
         #endregion
 
         #region Contructor
@@ -48,10 +61,13 @@ namespace GameFire.MapPlay
             chickenParachutes = new List<ChickenParachute>();
             map1 = new Map1(content, index, chickens, IsPlay, screen);
             map2 = new Map2(content, index, chickenParachutes, IsPlay, screen);
-            gives = new List<Give>();
+            gifts = new List<Gift>();
             eggs = new List<Egg>();
             scores = new Scores(content);
             currentMap = 1;
+            this.visible = true;
+            this.isWin = false;
+            this.timeEnd = 0;
             Load();
         }
         #endregion
@@ -62,6 +78,8 @@ namespace GameFire.MapPlay
             song = content.Load<Song>("Music/backgroundMap");
             MediaPlayer.Volume = 0.5f;
             MediaPlayer.Play(song);
+            soundLose = content.Load<SoundEffect>("Music/Gameover");
+            soundWin = content.Load<SoundEffect>("Music/Gamewin");
         }
         private void Unload()
         {
@@ -77,39 +95,78 @@ namespace GameFire.MapPlay
             chickens = null;
             chickenParachutes = null;
             content = null;
+            soundLose = null;
+            soundWin = null;
+            skinEndGame = null;
         }
         #endregion
 
         #region Method
         public void Update(GameTime gameTime)
         {
-            if(IsPlay)
+            if (Visible)
             {
-                UpdateMap1(gameTime);
-                UpdateShip(gameTime);
-                UpdateChickens(gameTime);
-                UpdateEggs(gameTime);
-                UpdateScores(gameTime);
-                UpdateGives(gameTime);
-                if(currentMap == 2)
-                    UpdateMap2(gameTime);
-                UpdateChickenParachutes(gameTime);
-                if (map1.IsClean == true && currentMap < 2)
-                    currentMap++;
-                
-                if (isShipDie)
-                    ScreenShake(gameTime);
+                if (IsPlay)
+                {
+                    UpdateMap1(gameTime);
+                    UpdateShip(gameTime);
+                    UpdateChickens(gameTime);
+                    UpdateEggs(gameTime);
+                    UpdateScores(gameTime);
+                    UpdateGives(gameTime);
+                    if (currentMap == 2)
+                    {
+                        UpdateMap2(gameTime);
+                        if (map2.IsClean  && chickens.Count < 1 && alreadySet == false)
+                        {
+                            isWin = true;
+                            skinEndGame = content.Load<Texture2D>("background/win");
+                            rectEndGame.X = (int)(25 * index.X);
+                            rectEndGame.Y = (int)(15 * index.Y);
+                            rectEndGame.Width = skinEndGame.Width;
+                            rectEndGame.Height = skinEndGame.Height;
+                            MediaPlayer.Stop();
+                            soundWin.Play();
+                            alreadySet = true;
+                        }
+                    }
+                    UpdateChickenParachutes(gameTime);
+                    if (map1.IsClean && currentMap < 2)
+                        currentMap++;
+
+                    if (isShipDie)
+                    {
+                        ScreenShake(gameTime);
+                        if (ship.Heart <= 0 && alreadySet == false)
+                        {
+                            skinEndGame = content.Load<Texture2D>("background/lose");
+                            rectEndGame.X = (int)(25 * index.X);
+                            rectEndGame.Y = (int)(15 * index.Y);
+                            rectEndGame.Width = skinEndGame.Width;
+                            rectEndGame.Height = skinEndGame.Height;
+                            MediaPlayer.Stop();
+                            soundLose.Play();
+                            alreadySet = true;
+                        }
+                    }
+                }
             }
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {  
-            DrawChickens(gameTime, spriteBatch);
-            DrawGives(gameTime, spriteBatch);
-            DrawEggs(gameTime, spriteBatch);
-            DrawScores(gameTime, spriteBatch);            
-            DrawChickenParachutes(gameTime, spriteBatch);
-            DrawShip(gameTime, spriteBatch);
+        {
+            if (visible)
+            {
+                //DrawButtons(gameTime, spriteBatch);
+                DrawScores(gameTime, spriteBatch);
+                DrawChickens(gameTime, spriteBatch);
+                DrawGives(gameTime, spriteBatch);
+                DrawEggs(gameTime, spriteBatch);
+                DrawChickenParachutes(gameTime, spriteBatch);
+                DrawShip(gameTime, spriteBatch);
+                if (ship.Heart <= 0 || isWin)
+                    DrawLose(gameTime, spriteBatch);
+            }
         }
 
 
@@ -135,9 +192,12 @@ namespace GameFire.MapPlay
                 {
                     scores.ScoresPlay += chicken.Attacked(ship.Bullets[i]);
                     ship.Bullets.RemoveAt(i--);
-                    Give give = chicken.CrateGive();
-                    if (give != null)
-                        gives.Add(give);
+                    if (chicken.IsAlive == false)
+                    {
+                        Gift gift = chicken.CrateGif();
+                        if (gift != null)
+                            gifts.Add(gift);
+                    }
                     return true;
                 }
             }
@@ -161,7 +221,6 @@ namespace GameFire.MapPlay
             }
             return false;
         }
-
 
         private bool ShipCollisionChicken()
         {
@@ -235,23 +294,23 @@ namespace GameFire.MapPlay
         }
         private void ShipCollisionGive()
         {
-            for (int i = 0; i < gives.Count; i++)
+            for (int i = 0; i < gifts.Count; i++)
             {
-                if (!gives[i].Visible) // chicken dead
+                if (!gifts[i].Visible) // chicken dead
                 {
-                    gives.RemoveAt(i--);
+                    gifts.RemoveAt(i--);
                     continue;
                 }
                 else if(!ship.IsDeading)
                 {
                     Rectangle rect1 = new Rectangle(ship.Bounds.Location + new Point(32, 5), new Point(13, 33));
                     Rectangle rect2 = new Rectangle(ship.Bounds.Location + new Point(10, 37), new Point(62, 35));
-                    if (rect1.Intersects(gives[i].Bounds) || rect2.Intersects(gives[i].Bounds))
+                    if (rect1.Intersects(gifts[i].Bounds) || rect2.Intersects(gifts[i].Bounds))
                     {
-                        gives[i].Visible = false;
+                        gifts[i].Visible = false;
                         ship.Level += 1;
-                        gives[i].SoundPlay();
-                        gives.RemoveAt(i--);
+                        gifts[i].SoundPlay();
+                        gifts.RemoveAt(i--);
                         
                         continue;
                     }
@@ -371,13 +430,13 @@ namespace GameFire.MapPlay
         #region Gives
         private void UpdateGives(GameTime gameTime)
         {
-            for (int i = 0; i < gives.Count; i++)
-                gives[i].Update(gameTime);
+            for (int i = 0; i < gifts.Count; i++)
+                gifts[i].Update(gameTime);
         }
         private void DrawGives(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            for (int i = 0; i < gives.Count; i++)
-                gives[i].Draw(gameTime, spriteBatch, Color.White);
+            for (int i = 0; i < gifts.Count; i++)
+                gifts[i].Draw(gameTime, spriteBatch, Color.White);
         }
         
         #endregion
@@ -394,6 +453,23 @@ namespace GameFire.MapPlay
         {
             map2.Update(gameTime);
         }
+        #endregion
+
+        #region Button
+        //private void DrawButtons(GameTime gameTime, SpriteBatch spriteBatch)
+        //{
+        //    for (int i = 0; i < buttons.Count; i++)
+        //    {
+        //        buttons[i].Draw(spriteBatch, Color.White);
+        //    }
+        //}
+        //private void UpdateButtons(GameTime gameTime)
+        //{
+        //    for (int i = 0; i < buttons.Count; i++)
+        //    {
+        //        buttons[i].isMouseHover();
+        //    }
+        //}
         #endregion
 
         #region Animation shake Screen when ship die
@@ -433,7 +509,49 @@ namespace GameFire.MapPlay
                     isLeft = false;
             }
         }
-        
+
+        #endregion
+
+        #region End Game
+        private void DrawLose(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            timeEnd += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if(timeEnd < 7)
+            {
+                spriteBatch.Draw(skinEndGame, rectEndGame, Color.White);
+            }
+            else
+            {
+                timeEnd = 0;
+                this.visible = false;
+            }
+        }
+        #endregion
+
+        #region Recycle
+        public void Recycle()
+        {
+            this.IsPlay = true;
+            ship.Bullets.Clear();
+            chickens.Clear();
+            chickenParachutes.Clear();
+            
+            gifts.Clear();
+            eggs.Clear();
+            scores.ScoresPlay = 0;
+            ship.Heart = 3;
+            map1 = null;
+            map2 = null;
+            map1 = new Map1(content, index, chickens, IsPlay, screen);
+            map2 = new Map2(content, index, chickenParachutes, IsPlay, screen);
+            currentMap = 1;
+            this.visible = true;
+            this.isWin = false;
+            this.alreadySet = false;
+            this.timeEnd = 0;
+            ship.Level = 1;
+            MediaPlayer.Play(song);
+        }
         #endregion
 
         #region Destructor

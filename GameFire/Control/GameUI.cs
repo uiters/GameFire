@@ -72,25 +72,24 @@ namespace GameFire
         #endregion
 
         #region Method
-        public void Draw(SpriteBatch spriteBatch, Color color)
+        public void Draw(SpriteBatch spriteBatch)
         {
             if (Buttons != null && Visible == true)
             {
                 foreach (var item in Buttons)
-                    item.Draw(spriteBatch, color);
-                spriteBatch.Draw(logo, desRectLogo, color);
+                    item.Draw(spriteBatch);
+                spriteBatch.Draw(logo, desRectLogo, Color.White);
             }
 
         }
         public void Update(GameTime time)
         {
-            MouseState mouse = Mouse.GetState();
             if (Visible == true)
                 for (int i = 0; i < buttons.Count; i++)
                 {
                     if (buttons[i].Visible == true)
                     {
-                        bool isMouserHover = buttons[i].isMouseHover(mouse);
+                        bool isMouserHover = buttons[i].isMouseHover();
                         if (isMouserHover == true && buttons[i].IsMouseClick == true)
                         {
                             timeSleep += (float)time.ElapsedGameTime.TotalMilliseconds;
@@ -113,10 +112,10 @@ namespace GameFire
             //=======================================
             #region Button play
             Rectangle playRectangle = new Rectangle();
-            playRectangle.X = (int)(35 * index.X);
+            playRectangle.X = (int)(37.5 * index.X);
             playRectangle.Y = (int)(50 * index.Y);
-            playRectangle.Width = (int)(skin.Width * scale) / 10;
-            playRectangle.Height = (int)(skin.Height * scale);
+            playRectangle.Width = (int)((skin.Width * scale) / 10 / 1.2);
+            playRectangle.Height = (int)((skin.Height * scale) / 1.2);
             Button btnPlay = new Button(skin, playRectangle, (int)GameFire.Buttons.Play);
             #endregion
             //=======================================
@@ -124,99 +123,99 @@ namespace GameFire
             //=======================================
             #region Button Pause
             Rectangle pauseRectangle = new Rectangle();
-            pauseRectangle.X = (int)(50 * index.X);
-            pauseRectangle.Y = (int)(60 * index.Y);
-            pauseRectangle.Width = (int)(skin.Width * scale) / 10;
-            pauseRectangle.Height = (int)(skin.Height * scale);
+            pauseRectangle.X = (int)(90 * index.X);
+            pauseRectangle.Y = (int)(0 * index.Y);
+            pauseRectangle.Width = (int)((skin.Width * scale) / 10)/ 3;
+            pauseRectangle.Height = (int)((skin.Height * scale) / 3);
             Button btnPause = new Button(skin, pauseRectangle, (int)GameFire.Buttons.Pause, false);
             #endregion
             //=======================================
             //Button Back
             //=======================================
             #region Button Back
-            Rectangle backRectangle = new Rectangle();
-            backRectangle.X = (int)(index.X * 50);
-            backRectangle.Y = (int)(index.Y * 50);
-            backRectangle.Width = (int)(skin.Width * scale) / 10;
-            backRectangle.Height = (int)(skin.Height * scale);
-            Button btnBack = new Button(skin, backRectangle, (int)GameFire.Buttons.Back, false);
+            //Rectangle backRectangle = new Rectangle();
+            //backRectangle.X = (int)(index.X * 50);
+            //backRectangle.Y = (int)(index.Y * 50);
+            //backRectangle.Width = (int)(skin.Width * scale) / 10;
+            //backRectangle.Height = (int)(skin.Height * scale);
+            //Button btnBack = new Button(skin, backRectangle, (int)GameFire.Buttons.Back, false);
             #endregion
             //=======================================
             //Button Help
             //=======================================
             #region Button Help
-            Rectangle helpRectangle = new Rectangle();
-            helpRectangle.X = (int)(50 * index.X);
-            helpRectangle.Y = (int)(80 * index.Y);
-            helpRectangle.Width = (int)(skin.Width * scale) / 10;
-            helpRectangle.Height = (int)(skin.Height * scale);
-            Button btnHelp = new Button(skin, helpRectangle, (int)GameFire.Buttons.Help, false);
+            //Rectangle helpRectangle = new Rectangle();
+            //helpRectangle.X = (int)(50 * index.X);
+            //helpRectangle.Y = (int)(80 * index.Y);
+            //helpRectangle.Width = (int)(skin.Width * scale) / 10;
+            //helpRectangle.Height = (int)(skin.Height * scale);
+            //Button btnHelp = new Button(skin, helpRectangle, (int)GameFire.Buttons.Help, false);
             #endregion
             //=======================================
             //Button Again
             //=======================================
             #region Button Again
-            Rectangle againRectangle = new Rectangle();
-            againRectangle.X = (int)(index.X);
-            againRectangle.Y = (int)(index.Y);
-            againRectangle.Width = (int)(skin.Width * scale) / 10;
-            againRectangle.Height = (int)(skin.Height * scale);
-            Button btnAgain = new Button(skin, againRectangle, (int)GameFire.Buttons.Again, false);
+            //Rectangle againRectangle = new Rectangle();
+            //againRectangle.X = (int)(index.X);
+            //againRectangle.Y = (int)(index.Y);
+            //againRectangle.Width = (int)(skin.Width * scale) / 10;
+            //againRectangle.Height = (int)(skin.Height * scale);
+            //Button btnAgain = new Button(skin, againRectangle, (int)GameFire.Buttons.Again, false);
             #endregion
             //=======================================
             //Button Setting
             //=======================================
             #region Button Setting
-            Rectangle settingRectangle = new Rectangle();
-            settingRectangle.X = (int)(50 * index.X) / 2;
-            settingRectangle.Y = (int)(70 * index.Y) / 2 - 200;
-            settingRectangle.Width = (int)(skin.Width * scale) / 10;
-            settingRectangle.Height = (int)(skin.Height * scale);
-            Button btnSetting = new Button(skin, settingRectangle, (int)GameFire.Buttons.Setting, false);
+            //Rectangle settingRectangle = new Rectangle();
+            //settingRectangle.X = (int)(37.5 * index.X);
+            //settingRectangle.Y = (int)(70 * index.Y);
+            //settingRectangle.Width = (int)((skin.Width * scale) / 10 / 1.2);
+            //settingRectangle.Height = (int)((skin.Height * scale) / 1.2);
+            //Button btnSetting = new Button(skin, settingRectangle, (int)GameFire.Buttons.Setting, false);
             #endregion
             //=======================================
             //Button Music On
             //=======================================
             #region Button Music On
-            Rectangle musicOnRectangle = new Rectangle();
-            musicOnRectangle.X = (int)(index.X) / 2;
-            musicOnRectangle.Y = (int)(index.Y) / 2 - 200;
-            musicOnRectangle.Width = (int)(skin.Width * scale) / 10;
-            musicOnRectangle.Height = (int)(skin.Height * scale);
-            Button btnMusicOn = new Button(skin, musicOnRectangle, (int)GameFire.Buttons.MusicOn, false);
+            //Rectangle musicOnRectangle = new Rectangle();
+            //musicOnRectangle.X = (int)(index.X) / 2;
+            //musicOnRectangle.Y = (int)(index.Y) / 2 - 200;
+            //musicOnRectangle.Width = (int)(skin.Width * scale) / 10;
+            //musicOnRectangle.Height = (int)(skin.Height * scale);
+            //Button btnMusicOn = new Button(skin, musicOnRectangle, (int)GameFire.Buttons.MusicOn, false);
             #endregion
             //=======================================
             //Button Music Off
             //=======================================
             #region Button Music Off
-            Rectangle musicOffRectangle = new Rectangle();
-            musicOffRectangle.X = (int)(index.X) / 2;
-            musicOffRectangle.Y = (int)(index.Y) / 2 - 200;
-            musicOffRectangle.Width = (int)(skin.Width * scale) / 10;
-            musicOffRectangle.Height = (int)(skin.Height * scale);
-            Button btnMusicOff = new Button(skin, musicOffRectangle, (int)GameFire.Buttons.MusicOff, false);
+            //Rectangle musicOffRectangle = new Rectangle();
+            //musicOffRectangle.X = (int)(index.X) / 2;
+            //musicOffRectangle.Y = (int)(index.Y) / 2 - 200;
+            //musicOffRectangle.Width = (int)(skin.Width * scale) / 10;
+            //musicOffRectangle.Height = (int)(skin.Height * scale);
+            //Button btnMusicOff = new Button(skin, musicOffRectangle, (int)GameFire.Buttons.MusicOff, false);
             #endregion
             //=======================================
             //Button Info
             //=======================================
             #region Button Info
-            Rectangle infoRectangle = new Rectangle();
-            infoRectangle.X = (int)(50 * index.X) / 2;
-            infoRectangle.Y = (int)(90 * index.Y) / 2 - 200;
-            infoRectangle.Width = (int)(skin.Width * scale) / 10;
-            infoRectangle.Height = (int)(skin.Height * scale);
-            Button btnInfo = new Button(skin, infoRectangle, (int)GameFire.Buttons.Info, false);
+            //Rectangle infoRectangle = new Rectangle();
+            //infoRectangle.X = (int)(50 * index.X) / 2;
+            //infoRectangle.Y = (int)(90 * index.Y) / 2 - 200;
+            //infoRectangle.Width = (int)(skin.Width * scale) / 10;
+            //infoRectangle.Height = (int)(skin.Height * scale);
+            //Button btnInfo = new Button(skin, infoRectangle, (int)GameFire.Buttons.Info, false);
             #endregion
             //=======================================
             //Button Cancel
             //=======================================
             #region Button Cancel
-            Rectangle cancelRectangle = new Rectangle();
-            cancelRectangle.X = (int)(index.X) / 2;
-            cancelRectangle.Y = (int)(index.Y) / 2;
-            cancelRectangle.Width = (int)(skin.Width * scale) / 10;
-            cancelRectangle.Height = (int)(skin.Height * scale);
-            Button btnCancel = new Button(skin, cancelRectangle, (int)GameFire.Buttons.Cancel, false);
+            //Rectangle cancelRectangle = new Rectangle();
+            //cancelRectangle.X = (int)(index.X) / 2;
+            //cancelRectangle.Y = (int)(index.Y) / 2;
+            //cancelRectangle.Width = (int)(skin.Width * scale) / 10;
+            //cancelRectangle.Height = (int)(skin.Height * scale);
+            //Button btnCancel = new Button(skin, cancelRectangle, (int)GameFire.Buttons.Cancel, false);
             #endregion
             //=======================================
             //Add Buttons
@@ -224,14 +223,14 @@ namespace GameFire
             #region Add Buttons
             Buttons.Add(btnPlay);
             Buttons.Add(btnPause);
-            Buttons.Add(btnBack);
-            Buttons.Add(btnHelp);
-            Buttons.Add(btnAgain);
-            Buttons.Add(btnSetting);
-            Buttons.Add(btnMusicOn);
-            Buttons.Add(btnMusicOff);
-            Buttons.Add(btnInfo);
-            Buttons.Add(btnCancel);
+            //Buttons.Add(btnBack);
+            //Buttons.Add(btnHelp);
+            //Buttons.Add(btnAgain);
+            //Buttons.Add(btnSetting);
+            //Buttons.Add(btnMusicOn);
+            //Buttons.Add(btnMusicOff);
+            //Buttons.Add(btnInfo);
+            //Buttons.Add(btnCancel);
             #endregion
             //=======================================
             //Logo

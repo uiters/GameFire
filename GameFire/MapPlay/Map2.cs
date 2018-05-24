@@ -16,7 +16,7 @@ namespace GameFire.MapPlay
         private float totalTime;
 
         public int Count { get => chickens.Count; }
-
+        public override bool IsClean { get => !(length < 100 || chickens.Count > 0); }
         #endregion
 
         #region Constructor
@@ -33,7 +33,7 @@ namespace GameFire.MapPlay
         {
             if(_isPlay)
             {
-                if(length < 50)
+                if(length < 100)
                 {
                     ChickenParachute chicken = GetChickenParachute(gameTime);
                     if (chicken != null)
@@ -50,12 +50,12 @@ namespace GameFire.MapPlay
         private ChickenParachute GetChickenParachute(GameTime gameTime)
         {
             totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if(totalTime >= 2500.0f)
+            if(totalTime >= 1500.0f)
             {
                 totalTime = 0.0f;
                 int randomX = random.Next(5, 99) * (int)_index.X;
                 return new ChickenParachute(_content, new Vector2(2, random.Next(1, 5)), _index,
-                    new Rectangle(new Point(randomX, -10), new Point(35, 48)), TypeChiken.ChickenParachuteRed, 1);// random.Next(1,10));
+                    new Rectangle(new Point(randomX, -10), new Point(35, 48)), TypeChiken.ChickenParachuteRed, random.Next(1,7));
             }
             else
             {
@@ -63,12 +63,21 @@ namespace GameFire.MapPlay
                 {
                     int randomX = random.Next(5, 99) * (int)_index.X;
                     return new ChickenParachute(_content, new Vector2(2, random.Next(1, 5)), _index,
-                        new Rectangle(new Point(randomX, -10), new Point(35, 48)), TypeChiken.ChickenParachuteRed, 1);// random.Next(1, 10));
+                        new Rectangle(new Point(randomX, -10), new Point(35, 48)), TypeChiken.ChickenParachuteRed, random.Next(1, 5));
                 }
                 else
                     return null;
             }           
         }
+        #endregion
+
+        #region Destructor
+        ~Map2()
+        {
+            chickens.Clear();
+            chickens = null;
+        }
+
         #endregion
     }
 }
