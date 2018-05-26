@@ -22,7 +22,7 @@ namespace GameFire.MapPlay
         {
             get
             {
-                if ((_isClean == false && Count == 0) || _isClean)
+                if ((_isClean == false && chickens.Count == 0) || _isClean)
                 {
                     _isClean = true;
                     return _isClean;
@@ -110,7 +110,7 @@ namespace GameFire.MapPlay
         /// </summary>
         private void Playing()
         {
-            if (Count >= 20 && timeNow < 15000f)
+            if (Count >= 20 && timeNow < 1500f)
             {
                 if(totalTime >= 30.0f)
                 {
@@ -284,7 +284,6 @@ namespace GameFire.MapPlay
         #region Destructor
         ~Map1()
         {
-            chickens.Clear();
             chickens = null;
         }
         #endregion

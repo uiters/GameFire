@@ -540,8 +540,6 @@ namespace GameFire.MapPlay
             eggs.Clear();
             scores.ScoresPlay = 0;
             ship.Heart = 3;
-            map1 = null;
-            map2 = null;
             map1 = new Map1(content, index, chickens, IsPlay, screen);
             map2 = new Map2(content, index, chickenParachutes, IsPlay, screen);
             currentMap = 1;
