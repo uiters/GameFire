@@ -1,9 +1,8 @@
-﻿using GameFire.bullet;
+﻿using GameFire.Player;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
-using GameFire.Player;
 
 namespace GameFire.Enemy
 {
@@ -19,17 +18,43 @@ namespace GameFire.Enemy
     public class Chicken : GameObject
     {
         #region Properties
+        /// <summary>
+        /// Loại chicken
+        /// </summary>
         private TypeChiken type;
-        private float totalTime;
+        /// <summary>
+        /// Khung hình hiện tại
+        /// </summary>
         private sbyte indexNow;
+        /// <summary>
+        /// Đang bị tấn công không?
+        /// </summary>
         private bool isAttacked;
 
+        /// <summary>
+        /// Hình ảnh khi chết
+        /// </summary>
         private Texture2D[] textureDies;
+        /// <summary>
+        /// Hình ảnh khi chết
+        /// </summary>
         private Rectangle[] desRectDies;
+        /// <summary>
+        /// Hình ảnh của một khung hình
+        /// </summary>
         private Rectangle sourceRectSkin;
 
+        /// <summary>
+        /// Âm thanh phát  khi chết
+        /// </summary>
         private SoundEffect soundDying;
+        /// <summary>
+        /// Âm thanh phát ra khi đẻ trứng
+        /// </summary>
         private SoundEffect soundLaying;
+        /// <summary>
+        /// Âm thanh phát ra khi bị đánh
+        /// </summary>
         private SoundEffect soundHurt;
 
         public Point Location
@@ -56,13 +81,16 @@ namespace GameFire.Enemy
             this.type = type;
             this._heart = heart;
             indexNow =(sbyte) _random.Next(0, 19);
-            totalTime = 0.0f;
+            _totalTime = 0.0f;
             _minScores = (int)((int)type * _heart * 100) + 100;
             this.Load();
         }
         #endregion
 
         #region Load & unLoad
+        /// <summary>
+        /// Tải hình ảnh
+        /// </summary>
         protected override void Load()
         {
             Texture2D textureDie;
@@ -70,7 +98,7 @@ namespace GameFire.Enemy
             {
                 case 1:
                     _skin = _content.Load<Texture2D>("Enemy/chickenGreen");
-                    if(_desRectSkin.Size == Point.Zero)
+                    if (_desRectSkin.Size == Point.Zero)
                     {
                         _desRectSkin.Width = 47;
                         _desRectSkin.Height = _skin.Height;
@@ -79,16 +107,16 @@ namespace GameFire.Enemy
                     break;
                 case 2:
                     _skin = _content.Load<Texture2D>("Enemy/chickenRed");
-                    if(_desRectSkin.Size == Point.Zero)
+                    if (_desRectSkin.Size == Point.Zero)
                     {
                         _desRectSkin.Width = 40;
                         _desRectSkin.Height = _skin.Height;
                     }
-                    sourceRectSkin = new Rectangle(40 * indexNow, 0, 40 , _skin.Height);
+                    sourceRectSkin = new Rectangle(40 * indexNow, 0, 40, _skin.Height);
                     break;
                 case 3:
                     _skin = _content.Load<Texture2D>("Enemy/bossRed");
-                    if(_desRectSkin.Size == Point.Zero)
+                    if (_desRectSkin.Size == Point.Zero)
                     {
                         _desRectSkin.Width = 75;
                         _desRectSkin.Height = 68;
@@ -106,6 +134,9 @@ namespace GameFire.Enemy
             LoadSound();
         }
 
+        /// <summary>
+        /// Tải âm thành
+        /// </summary>
         private void LoadSound()
         {
             switch (_random.Next(0, 5))
@@ -123,7 +154,7 @@ namespace GameFire.Enemy
                     soundDying = _content.Load<SoundEffect>("Music/chicken/Chicken_death4");
                     break;
             }
-            switch (_random.Next(0,4))
+            switch (_random.Next(0, 4))
             {
                 case 0:
                     soundHurt = _content.Load<SoundEffect>("Music/chicken/Chicken_hurt1");
@@ -138,6 +169,9 @@ namespace GameFire.Enemy
             soundLaying = _content.Load<SoundEffect>("Music/chicken/Chicken_lay");
         }
 
+        /// <summary>
+        /// Giải phóng tài nguyên
+        /// </summary>
         protected override void Unload()
         {
             for (int i = 0; i < desRectDies.Length; i++)
@@ -152,12 +186,15 @@ namespace GameFire.Enemy
         #endregion
 
         #region Method
+        /// <summary>
+        /// Cập nhật vị trí
+        /// </summary>
         public override void Update(GameTime gameTime)
         {
             if (!Visible)
                 return;
-            _timeLive +=(float) gameTime.ElapsedGameTime.TotalSeconds;
-            if(_heart > 0)
+            _timeLive += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (_heart > 0)
             {
                 AnimationFly(gameTime);
                 if (isAttacked)
@@ -182,13 +219,16 @@ namespace GameFire.Enemy
 
             }
         }
+        /// <summary>
+        /// Hàm vẽ lại
+        /// </summary>
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Color color)
         {
             if (!Visible)
             {
                 return;
             }
-            if(_heart > 0)
+            if (_heart > 0)
             {
                 spriteBatch.Draw(_skin, _desRectSkin, sourceRectSkin, color);
             }
@@ -204,8 +244,7 @@ namespace GameFire.Enemy
 
         #region Method Chicken
         /// <summary>
-        /// Return scores if chicken dies .
-        /// if chicken don't dies return 0
+        /// Bị tấn công bằng đạn. Tiêu diệt cho điểm số.
         /// </summary>
         /// <param name="bullet"></param>
         /// <returns></returns>
@@ -216,12 +255,18 @@ namespace GameFire.Enemy
             return GetScores();
         }
 
+        /// <summary>
+        /// Tấn công người chơi. Tiêu diệt cho điểm số
+        /// </summary>
         public int Attacked(Ship ship)
         {
             this._heart -= 1.0f;
             return GetScores();
         }
 
+        /// <summary>
+        /// Nhận điểm khi tiêu diệt
+        /// </summary>
         private int GetScores()
         {
             if (_heart <= 0.0f)
@@ -243,20 +288,26 @@ namespace GameFire.Enemy
             }
         }
 
+        /// <summary>
+        /// Hiệu ứng bay
+        /// </summary>
         private void AnimationFly(GameTime gameTime)
         {
-            totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (totalTime >= 70.0f)
+            _totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (_totalTime >= 70.0f)
             {
                 indexNow = (++indexNow >= 19) ? (sbyte)0 : indexNow;
                 sourceRectSkin.X = sourceRectSkin.Width * ((indexNow > 9) ? 19 - indexNow : indexNow);
-                totalTime = 0.0f;
+                _totalTime = 0.0f;
             }
         }
 
+        /// <summary>
+        /// Đẻ trứng
+        /// </summary>
         public Egg CreateEgg()
         {
-            if(_random.Next(0, 750) == 100)
+            if (_random.Next(0, 750) == 100)
             {
                 soundLaying.Play(0.65f, 0, 0);
                 Point sizeEgg;
@@ -269,8 +320,8 @@ namespace GameFire.Enemy
                 {
                     sizeX = 2 * _desRectSkin.Width / 5;
                     sizeEgg = new Point(sizeX, sizeX);
-                }          
-                return new Egg(_content, new Vector2(0, _random.Next(2, 10)), _index, new Rectangle(_desRectSkin.Center + new Point(-sizeEgg.X / 2, 0) , sizeEgg), this.type);
+                }
+                return new Egg(_content, new Vector2(0, _random.Next(2, 10)), _index, new Rectangle(_desRectSkin.Center + new Point(-sizeEgg.X / 2, 0), sizeEgg), this.type);
             }
             else
             {
@@ -278,7 +329,10 @@ namespace GameFire.Enemy
             }
         }
 
-        public Gift CrateGif()
+        /// <summary>
+        /// Tạo ra quà khi chết
+        /// </summary>
+        public Gift CreateGif()
         {
 
             if (_random.Next(0, 75) == 15)
@@ -289,6 +343,9 @@ namespace GameFire.Enemy
         #endregion
 
         #region destructor
+        /// <summary>
+        /// Huỷ bỏ thể hiện
+        /// </summary>
         ~Chicken()
         {
             Unload();

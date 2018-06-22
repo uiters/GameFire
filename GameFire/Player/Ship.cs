@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 
-namespace GameFire.bullet
+namespace GameFire.Player
 {
     public class Ship : GameObject
     {
@@ -20,7 +20,6 @@ namespace GameFire.bullet
         private float scale;
         private bool isMaxBig = false;
         private Vector2 origin;
-        private float totalTime;
         private int level;
         private Texture2D textureDie;
         private Rectangle desRectDie;
@@ -122,25 +121,25 @@ namespace GameFire.bullet
                 else
                 if(_isMove == false)
                 {
-                    this.Apperend(gameTime);
+                    this.Appeared(gameTime);
                     UpdateScale();                  
                 }
                 else
                 {
                     if (IsProtect == true)
                         Protect(gameTime);
-                    totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    _totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
                     MouseState mouse = Mouse.GetState();
                     KeyboardState keyboard = Keyboard.GetState();
-                    if(totalTime > 30.0f)
+                    if(_totalTime > 30.0f)
                     {
                         if (_desRectSkin.X != mouse.X || _desRectSkin.Y != mouse.Y)
                         {
                             _desRectSkin.Location = new Point(mouse.X - 31, mouse.Y - 31);
                             CalculateLocation();
                         }
-                        totalTime = 0.0f;
+                        _totalTime = 0.0f;
                     }
                     if(!CheckMouseIsOut(mouse))
                         timeDelay += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -199,7 +198,7 @@ namespace GameFire.bullet
         #endregion
 
         #region Game Start
-        private void Apperend(GameTime gameTime)
+        private void Appeared(GameTime gameTime)
         {
             timeApear += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             if (timeApear >= 1000.0f)

@@ -19,7 +19,8 @@ namespace GameFire
         MusicOn = 6,
         MusicOff= 7,
         Info = 8,
-        Cancel = 9
+        Cancel = 9,
+        Other = 10
     }
     internal class GameUI
     {

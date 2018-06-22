@@ -1,6 +1,5 @@
-﻿using GameFire.bullet;
+﻿using GameFire.Player;
 using GameFire.Enemy;
-using GameFire.Player;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -113,7 +112,7 @@ namespace GameFire.MapPlay
                     UpdateChickens(gameTime);
                     UpdateEggs(gameTime);
                     UpdateScores(gameTime);
-                    UpdateGives(gameTime);
+                    UpdateGifts(gameTime);
                     if (currentMap == 2)
                     {
                         UpdateMap2(gameTime);
@@ -160,7 +159,7 @@ namespace GameFire.MapPlay
                 //DrawButtons(gameTime, spriteBatch);
                 DrawScores(gameTime, spriteBatch);
                 DrawChickens(gameTime, spriteBatch);
-                DrawGives(gameTime, spriteBatch);
+                DrawGifts(gameTime, spriteBatch);
                 DrawEggs(gameTime, spriteBatch);
                 DrawChickenParachutes(gameTime, spriteBatch);
                 DrawShip(gameTime, spriteBatch);
@@ -175,7 +174,7 @@ namespace GameFire.MapPlay
         #region Check Collision
         private bool ShipCollision()
         {
-            ShipCollisionGive();
+            ShipCollisionGift();
             return ShipCollisionChicken() || ShipCollisionEgg() || ShipCollisionChickenParachute();
         }
 
@@ -194,7 +193,7 @@ namespace GameFire.MapPlay
                     ship.Bullets.RemoveAt(i--);
                     if (chicken.IsAlive == false)
                     {
-                        Gift gift = chicken.CrateGif();
+                        Gift gift = chicken.CreateGif();
                         if (gift != null)
                             gifts.Add(gift);
                     }
@@ -292,7 +291,7 @@ namespace GameFire.MapPlay
             }
             return false;
         }
-        private void ShipCollisionGive()
+        private void ShipCollisionGift()
         {
             for (int i = 0; i < gifts.Count; i++)
             {
@@ -428,12 +427,12 @@ namespace GameFire.MapPlay
         #endregion
 
         #region Gives
-        private void UpdateGives(GameTime gameTime)
+        private void UpdateGifts(GameTime gameTime)
         {
             for (int i = 0; i < gifts.Count; i++)
                 gifts[i].Update(gameTime);
         }
-        private void DrawGives(GameTime gameTime, SpriteBatch spriteBatch)
+        private void DrawGifts(GameTime gameTime, SpriteBatch spriteBatch)
         {
             for (int i = 0; i < gifts.Count; i++)
                 gifts[i].Draw(gameTime, spriteBatch, Color.White);

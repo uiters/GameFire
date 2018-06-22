@@ -1,4 +1,4 @@
-﻿using GameFire.bullet;
+﻿using GameFire.Player;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -10,7 +10,6 @@ namespace GameFire.Enemy
     {
         #region Properties
         private TypeChiken type;
-        private float totalTime;
         private float timeAttacked;
 
         private bool isAttack;
@@ -118,10 +117,10 @@ namespace GameFire.Enemy
         #region Private Method
         private void ChickenFall(GameTime gameTime)
         {
-            totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (totalTime > 30f)
+            _totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (_totalTime > 30f)
             {
-                totalTime = 0;
+                _totalTime = 0;
                _desRectSkin.Y += (int)_speed.Y;
                 shake = (rotation > 0.195f || rotation < -0.195f) ? -shake : shake;
                 rotation += shake;

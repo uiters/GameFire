@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
-namespace GameFire.bullet
+namespace GameFire.Player
 {
     public class GameObject
     {
@@ -19,6 +19,7 @@ namespace GameFire.bullet
         protected float _heart;
         protected float _timeLive;
         protected int _minScores;
+        protected float _totalTime;
 
         virtual public int Scores
         {

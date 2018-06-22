@@ -1,9 +1,8 @@
-﻿using GameFire.bullet;
+﻿using GameFire.Player;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace GameFire.Enemy
 {
@@ -12,7 +11,6 @@ namespace GameFire.Enemy
         #region Properties
         private TypeChiken type;
         private bool isBreak;
-        private float totalTime;
         private sbyte indexNow;
         private Texture2D textureBreak;
         private Rectangle desRectBreak;
@@ -119,8 +117,8 @@ namespace GameFire.Enemy
         }
         private void AnimationBreak(GameTime gameTime)
         {
-            totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (totalTime >= 70.0f)
+            _totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (_totalTime >= 70.0f)
             {
                 if (indexNow >= 9)
                 {
@@ -129,7 +127,7 @@ namespace GameFire.Enemy
                 }
                 else
                 {
-                    totalTime = 0;
+                    _totalTime = 0;
                     sourceRectBreak.X = desRectBreak.Width * ++indexNow;
                 }
             }

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GameFire.bullet
+namespace GameFire.Player
 {
     public class Bullet : GameObject
     {

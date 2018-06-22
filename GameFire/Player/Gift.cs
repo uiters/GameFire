@@ -1,5 +1,4 @@
-﻿using GameFire.bullet;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +9,6 @@ namespace GameFire.Player
         #region Properties
         private sbyte indexNow;
         private Rectangle sourceRectSkin;
-        private float totalTime;
         private SoundEffect soundLevelUp;
         #endregion
 
@@ -89,12 +87,12 @@ namespace GameFire.Player
         }
         private void AnimationRotation(GameTime gameTime)
         {
-            totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-            if (totalTime >= 33.0f)
+            _totalTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (_totalTime >= 33.0f)
             {
                 indexNow = (++indexNow >= 25) ? (sbyte)0 : indexNow;
                 sourceRectSkin.X = 44 * indexNow;
-                totalTime = 0.0f;
+                _totalTime = 0.0f;
             }
         }
         
