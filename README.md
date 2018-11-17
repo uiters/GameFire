@@ -2,6 +2,7 @@
 Clone from Chicken invaders
 
 ## Deployment
+* C#
 * .NET Framework 4.6.1
 * MonoGame 3.7
 
